@@ -1,0 +1,7 @@
+{
+  "name": "faketify",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
