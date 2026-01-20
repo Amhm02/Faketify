@@ -35,3 +35,19 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+
+/* --- Arreglo para el contraste del Action Sheet --- */
+
+/* Esto asegura que el texto y los iconos en el menú de selección sean siempre oscuros */
+ion-action-sheet {
+  --button-color: #222222; /* Color casi negro para texto e iconos */
+  
+  /* Opcional: Si quieres forzar que el fondo del menú sea siempre blanco */
+  /* --background: #ffffff; */
+}
+
+/* Regla adicional para asegurar que los iconos también cambien de color */
+ion-action-sheet .action-sheet-button .action-sheet-icon {
+  color: #222222;
+}

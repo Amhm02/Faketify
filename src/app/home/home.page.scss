@@ -1,24 +1,31 @@
-.slide-content{
+.slide-content {
   text-align: center;
   padding: 10px;
-}
 
-.slide-content img{
-  width: 100%;
-  max-width: 300px;
-  height: auto;
-  border-radius: 10px;
-  margin: 10% 0;
-}
+  img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+    margin: 10% 0;
+  }
 
-.slide-content h2{
-  margin: 0;
-  font-size: 25px;
-  color: #e20a0a
-}
+  h2 {
+    margin: 0;
+    font-size: 25px;
+    /* Usa el color primario definido por el tema activo (rojo, blanco, rosa fuerte, dorado) */
+    color: var(--ion-color-primary);
+    transition: color 0.3s ease;
+  }
 
-.slide-content p{
-  font-size: 20px;
-  color: #fff;
-  text-align: center;
+  p {
+    font-size: 20px;
+    text-align: center;
+
+    /* Usa el color de texto global definido por el tema activo (negro, blanco, vino, etc.) */
+    color: var(--ion-text-color);
+
+    /* Suaviza el cambio de color */
+    transition: color 0.3s ease;
+  }
 }

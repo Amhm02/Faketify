@@ -1,18 +1,24 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Home
+      Themes Demo
     </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="presentThemeActionSheet()">
+        <ion-icon slot="icon-only" name="color-palette"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <swiper-container 
-  pagination="true"
-  loop="true"
-  slides-per-view="1"
+  <swiper-container
+    pagination="true"
+    loop="true"
+    slides-per-view="1"
   >
-
   <swiper-slide *ngFor="let genre of genres">
     <div class="slide-content">
       <h2>{{genre.title}}</h2>
@@ -20,7 +26,5 @@
       <p>{{genre.description}}</p>
     </div>
   </swiper-slide>
-    <swiper-slide>Slide 2</swiper-slide>
-    <swiper-slide>Slide 3</swiper-slide>
   </swiper-container>
 </ion-content>
