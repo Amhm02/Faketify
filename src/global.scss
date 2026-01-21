@@ -17,3 +17,18 @@ ion-action-sheet {
 ion-action-sheet .action-sheet-button .action-sheet-icon {
   color: #222222;
 }
+
+/* Smooth theme transitions (backgrounds and text) */
+body, ion-app, ion-content, ion-toolbar, .slide-content {
+  transition: background-color 320ms ease, color 320ms ease;
+}
+
+/* Slightly smooth images and shadows for nicer visual flow */
+.slide-content img {
+  transition: transform 300ms ease, box-shadow 300ms ease, filter 300ms ease;
+}
+
+/* Small fade on toolbar background */
+ion-toolbar {
+  transition: background-color 320ms ease, color 320ms ease;
+}

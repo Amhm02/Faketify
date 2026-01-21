@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon, ActionSheetController } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { colorPalette, sunny, moon, heart, star, close } from 'ionicons/icons';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon } from '@ionic/angular/standalone';
+import { ThemeService } from '../services/theme.service';
 import { StorageService } from '../storage.service';
 import { Router } from '@angular/router';
+import { ThemeButtonComponent } from '../components/theme-button/theme-button.component';
 
 const THEME_KEY = 'selected-theme';
 
@@ -14,7 +14,7 @@ const THEME_KEY = 'selected-theme';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon],
+  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon, ThemeButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomePage implements OnInit {
@@ -38,52 +38,34 @@ export class HomePage implements OnInit {
   ];
 
   constructor(
-    private actionSheetCtrl: ActionSheetController,
+    private themeService: ThemeService,
     private storageService: StorageService,
     private router: Router
-  ) {
-    addIcons({ colorPalette, sunny, moon, heart, star, close });
-  }
+  ) {}
+
 
   async ngOnInit() {
-    const savedTheme = await this.storageService.get(THEME_KEY);
+    await this.themeService.init();
+    const savedTheme = this.themeService.getTheme();
     if (savedTheme) {
-      console.log('Tema cargado del storage:', savedTheme);
       this.changeTheme(savedTheme, false);
     }
   }
 
-  async presentThemeActionSheet() {
-    const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Selecciona un Tema',
-      buttons: [
-        { text: 'Claro (Original)', icon: 'sunny', handler: () => { this.changeTheme('light'); } },
-        { text: 'Oscuro', icon: 'moon', handler: () => { this.changeTheme('dark'); } },
-        { text: 'Rosa Pastel', icon: 'heart', handler: () => { this.changeTheme('rosa'); } },
-        { text: 'Amarillo', icon: 'star', handler: () => { this.changeTheme('amarillo'); } },
-        { text: 'Cancelar', icon: 'close', role: 'cancel' }
-      ]
-    });
-    await actionSheet.present();
-  }
+
   
   changeTheme(theme: string, saveToStorage: boolean = true) {
-    document.body.classList.remove('theme-dark', 'theme-rosa', 'theme-amarillo');
-
-    if (theme !== 'light') {
-      document.body.classList.add(`theme-${theme}`);
-    }
-
     if (saveToStorage) {
-      console.log('Guardando nuevo tema:', theme);
-      this.storageService.set(THEME_KEY, theme);
+      this.themeService.setTheme(theme);
+    } else {
+      this.themeService.applyTheme(theme);
     }
   }
 
 
-  goBack() {
+  async goBack() {
     console.log("Navegando a Intro...");
-
+    await this.storageService.remove('intro_seen');
     this.router.navigateByUrl("/intro");
   }
 }
