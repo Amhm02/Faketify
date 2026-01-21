@@ -11,9 +11,7 @@ export class StorageService {
     this.init();
   }
 
-  // Inicializa la instancia de almacenamiento
   async init() {
-    // Si ya está listo, no hacemos nada
     if (this._storage != null) {
       return;
     }
@@ -21,19 +19,16 @@ export class StorageService {
     this._storage = storage;
   }
 
-  // Guardar un valor (ej: set('tema', 'rosa'))
   public async set(key: string, value: any) {
-    await this.init(); // Asegurar que esté inicializado
+    await this.init();
     return this._storage?.set(key, value);
   }
 
-  // Obtener un valor (ej: get('tema'))
   public async get(key: string) {
-    await this.init(); // Asegurar que esté inicializado
+    await this.init(); 
     return this._storage?.get(key);
   }
 
-  // Eliminar un valor
   public async remove(key: string) {
     await this.init();
     return this._storage?.remove(key);

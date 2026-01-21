@@ -1,50 +1,29 @@
-/* 1. Tema Oscuro Forzado (Clase manual) */
 body.theme-dark {
   --ion-background-color: #121212;
   --ion-text-color: #ffffff;
   --ion-item-background: #1e1e1e;
   --ion-card-background: #1e1e1e;
-  
   --ion-toolbar-background: #1f1f1f;
   --ion-toolbar-color: #ffffff;
-  
-
   --ion-color-primary: #ffffff; 
 }
 
-/* 2. Tema Rosa */
 body.theme-rosa {
-  /* Fondo rosa suave */
   --ion-background-color: #ffeef2;
-  /* Texto color vino */
   --ion-text-color: #680028;
-  
-  /* Componentes (Items, Cards) un poco más oscuros o claros según gusto */
   --ion-item-background: #ffeef2;
   --ion-card-background: #fff0f5;
-
-  /* Toolbar rosa fuerte */
   --ion-toolbar-background: #ff69b4;
   --ion-toolbar-color: #ffffff;
-
-  /* Color primario para botones e iconos */
   --ion-color-primary: #d63384; 
 }
 
-/* 3. Tema Amarillo */
 body.theme-amarillo {
-  /* Fondo crema */
   --ion-background-color: #fffacd;
-  /* Texto oscuro */
   --ion-text-color: #3d3d00;
-  
   --ion-item-background: #fffacd;
   --ion-card-background: #fffbe6;
-
-  /* Toolbar dorado */
   --ion-toolbar-background: #ffd700;
   --ion-toolbar-color: #000000;
-
-  /* Color primario */
   --ion-color-primary: #cca300;
 }

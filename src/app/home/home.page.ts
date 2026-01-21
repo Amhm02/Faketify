@@ -1,19 +1,12 @@
-// 1. Importamos OnInit para ejecutar código al iniciar la página
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButtons, IonButton, IonIcon,
-  ActionSheetController
-} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon, ActionSheetController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { colorPalette, sunny, moon, heart, star, close } from 'ionicons/icons';
-
-// 2. Importamos NUESTRO servicio de almacenamiento (ajusta la ruta si es necesario)
 import { StorageService } from '../storage.service';
+import { Router } from '@angular/router';
 
-// Clave para guardar el tema
 const THEME_KEY = 'selected-theme';
 
 @Component({
@@ -21,41 +14,41 @@ const THEME_KEY = 'selected-theme';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    IonHeader, IonToolbar, IonTitle, IonContent,
-    IonButtons, IonButton, IonIcon
-  ],
+  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-// 3. Implementamos OnInit
 export class HomePage implements OnInit {
 
   genres = [
     {
       title: "Nu-Metal",
       image: "assets/slipknot.jpg",
-      description: "Slipknot es una banda estadounidense...",
+      description: "Slipknot es una banda estadounidense de heavy metal y nu metal formada en 1995 en Des Moines, Iowa. Sus integrantes en la actualidad son Corey Taylor, Jim Root, Mick Thomson, Shawn Crahan, Sid Wilson, Alessandro Venturella, Michael Pfaff y Eloy Casagrande.",
     },
-    // ... resto de tus datos
-    { title: "Metal industrial", image: "assets/Rammstein.png", description: "..." },
-    { title: 'Metal gótico', image: 'assets/lord.jpg', description: '...' }
+    { 
+      title: "Metal industrial", 
+      image: "assets/Rammstein.png", 
+      description: "Rammstein es una banda alemana de metal industrial fundada en 1994 por los músicos Till Lindemann, Richard Z. Kruspe, Oliver Riedel, Paul Landers, Christian Lorenz y Christoph Schneider.​" 
+    },
+    { 
+      title: 'Metal gótico', 
+      image: 'assets/lord.jpg', 
+      description: 'Lord of the Lost es una banda alemana de metal gótico procedente de Hamburgo y creada en 2007 como un proyecto en solitario en manos del músico Chris "The Lord" Harms, quien anteriormente había sido cantante y guitarrista del grupo de rock Philiae y también guitarrista y segundo vocalista del grupo de glam metal The Pleasures.'
+    }
   ];
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
-    // 4. Inyectamos el StorageService
-    private storageService: StorageService
+    private storageService: StorageService,
+    private router: Router
   ) {
     addIcons({ colorPalette, sunny, moon, heart, star, close });
   }
 
-  // 5. Al iniciar, cargamos el tema guardado
   async ngOnInit() {
     const savedTheme = await this.storageService.get(THEME_KEY);
     if (savedTheme) {
       console.log('Tema cargado del storage:', savedTheme);
-      // Aplicamos el tema sin volver a guardarlo (false)
       this.changeTheme(savedTheme, false);
     }
   }
@@ -73,21 +66,24 @@ export class HomePage implements OnInit {
     });
     await actionSheet.present();
   }
-
-  // 6. Función actualizada para guardar en storage
+  
   changeTheme(theme: string, saveToStorage: boolean = true) {
-    // Limpiar clases previas
     document.body.classList.remove('theme-dark', 'theme-rosa', 'theme-amarillo');
 
-    // Aplicar nueva clase si no es light
     if (theme !== 'light') {
       document.body.classList.add(`theme-${theme}`);
     }
 
-    // Guardar si es necesario
     if (saveToStorage) {
       console.log('Guardando nuevo tema:', theme);
       this.storageService.set(THEME_KEY, theme);
     }
+  }
+
+
+  goBack() {
+    console.log("Navegando a Intro...");
+
+    this.router.navigateByUrl("/intro");
   }
 }

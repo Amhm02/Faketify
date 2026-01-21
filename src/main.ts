@@ -7,7 +7,6 @@ import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 
-// 1. Importamos el módulo de almacenamiento
 import { IonicStorageModule } from '@ionic/storage-angular';
 
 if (environment.production) {
@@ -19,8 +18,6 @@ bootstrapApplication(AppComponent, {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes),
-
-    // 2. Registramos IonicStorageModule aquí para que esté disponible globalmente
     importProvidersFrom(IonicStorageModule.forRoot())
   ],
 });

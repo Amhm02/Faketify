@@ -1,5 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+        Intro
+      </ion-button>
+    </ion-buttons>
+
     <ion-title>
       Themes Demo
     </ion-title>
@@ -9,22 +16,20 @@
         <ion-icon slot="icon-only" name="color-palette"></ion-icon>
       </ion-button>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <swiper-container
-    pagination="true"
-    loop="true"
+<ion-content [fullscreen]="true">
+  <swiper-container 
+    pagination="true" 
+    loop="true" 
     slides-per-view="1"
   >
-  <swiper-slide *ngFor="let genre of genres">
-    <div class="slide-content">
-      <h2>{{genre.title}}</h2>
-      <img [src]="genre.image" [alt]="genre.title"/>
-      <p>{{genre.description}}</p>
-    </div>
-  </swiper-slide>
+    <swiper-slide *ngFor="let genre of genres">
+      <div class="slide-content">
+        <h2>{{genre.title}}</h2>
+        <img [src]="genre.image" [alt]="genre.title" />
+        <p>{{genre.description}}</p>
+      </div>
+    </swiper-slide>
   </swiper-container>
-</ion-content>

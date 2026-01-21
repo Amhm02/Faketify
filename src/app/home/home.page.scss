@@ -13,7 +13,6 @@
   h2 {
     margin: 0;
     font-size: 25px;
-    /* Usa el color primario definido por el tema activo (rojo, blanco, rosa fuerte, dorado) */
     color: var(--ion-color-primary);
     transition: color 0.3s ease;
   }
@@ -21,11 +20,7 @@
   p {
     font-size: 20px;
     text-align: center;
-
-    /* Usa el color de texto global definido por el tema activo (negro, blanco, vino, etc.) */
     color: var(--ion-text-color);
-
-    /* Suaviza el cambio de color */
     transition: color 0.3s ease;
   }
 }
