@@ -17,10 +17,10 @@ import { ThemeButtonComponent } from '../components/theme-button/theme-button.co
 export class IntroPage implements OnInit {
 
   slides = [
-    { title: 'Bienvenido', image: 'assets/slipknot.jpg', description: 'Descubre nuestra demo de temas con slides dinámicos.' },
-    { title: 'Explora Temas', image: 'assets/Rammstein.png', description: 'Cambia el color del slide con un botón.' },
-    { title: 'Personaliza', image: 'assets/lord.jpg', description: 'Guarda tu tema preferido y llévalo contigo.' },
-    { title: 'Disfruta', image: 'assets/slipknot.jpg', description: 'Navega al Home cuando estés listo.' }
+    { title: 'Bienvenido', image: 'assets/spoti logo.jpg'},
+    { title: 'Millones de canciones', image: 'assets/generos-musicales.webp', description: 'Miles de géneros.' },
+    { title: 'Millones de artistas', image: 'assets/billboard.webp', description: 'Lleva tu a artista favorito siempre contigo.' },
+    { title: 'Disfruta', image: 'assets/SPOTIFY.webp', description: 'Empieza a streamer dando click a Home' }
   ];
 
   slideTheme: 'light'|'dark'|'rosa'|'amarillo' = 'light';

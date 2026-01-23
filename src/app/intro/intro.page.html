@@ -9,7 +9,7 @@
 
 <ion-content class="ion-padding ion-text-center">
   <div class="container-center">
-    <swiper-container pagination="true" loop="false" slides-per-view="1">
+    <swiper-container pagination="true" loop="true" slides-per-view="1">
       <swiper-slide *ngFor="let slide of slides; let i = index">
         <div class="slide-content card">
           <h2>{{slide.title}}</h2>
@@ -25,3 +25,4 @@
     </div>
   </div>
 </ion-content>
+
