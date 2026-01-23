@@ -1,27 +1,38 @@
-#container {
+.slide-content {
+  background: var(--ion-card-background);
+  color: var(--ion-text-color);
+  padding: 24px;
+  margin: 24px auto;
+  max-width: 820px;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
   text-align: center;
+  transition: background-color 320ms ease, color 320ms ease, transform 220ms ease;
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  img {
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    border-radius: 12px;
+    margin: 18px 0;
+    transition: transform 300ms ease, box-shadow 300ms ease;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 32px;
+    color: var(--ion-color-primary);
+    transition: color 0.3s ease;
+    font-weight: 700;
+  }
+
+  p {
+    margin-top: 10px;
+    font-size: 16px;
+    text-align: center;
+    color: var(--ion-text-color);
+    opacity: 0.92;
+    transition: color 0.3s ease;
+  }
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
-}
