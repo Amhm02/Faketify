@@ -16,3 +16,21 @@ export class IntroGuard implements CanActivate {
     return true;
   }
 }
+
+export class AuthGuard implements CanActivate {
+  constructor(
+    private storage: StorageService,
+    private router: Router
+  ) {}
+
+  async canActivate(): Promise<boolean> {
+    const isLogged = await this.storage.get('login');
+
+    if (isLogged) {
+      return true; 
+    } else {
+      await this.router.navigateByUrl('/login');
+      return false;
+    }
+  }
+}

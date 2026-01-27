@@ -1,0 +1,70 @@
+ion-content {
+  --background: #4CAF50;
+  color: #ffffff;
+}
+
+.profile-default-image img{
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+}
+
+.profile-default-image p {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+ion-item {
+  --background: rgba(255, 255, 255, 0.1);
+  --color: #ffffff;
+  border-radius: 8px;
+}
+
+ion-input::part(input) {
+  color: #ffffff;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 6px; 
+  color: #000000;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.error-message ion-icon {
+  font-size: 1.2rem;
+  color: #000000;
+}
+
+.register-section {
+  font-size: 0.95rem;
+  color: #ffffff;
+
+  .register-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .register-button:hover {
+    text-decoration: underline;
+  }
+}
+
+.login-error {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #000000;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
