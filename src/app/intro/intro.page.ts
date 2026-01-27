@@ -49,11 +49,14 @@ export class IntroPage implements OnInit {
     }
   }
 
-
-
   async startApp() {
     await this.storageService.set('intro_seen', true);
-    this.router.navigateByUrl('/home');
+    const isLoogedIn = await this.storageService.get ('login');
+    if (isLoogedIn){
+      this.router.navigateByUrl('/home');
+    } else {
+      this.router.navigateByUrl('/login');
+    }
   }
 
   async resetIntroSeen() {

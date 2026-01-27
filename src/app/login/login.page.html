@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title ion-text-center> Login </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <figure class="profile-default-image ion-text-center">
+    <p>Ingresa tus datos</p>
+    <img src="assets/user.png">
+  </figure>
+
+  <form [formGroup]="loginForm" (ngSubmit)="loginUser(loginForm.value)">
+    <ion-item>
+      <ion-input 
+      label= "Email" 
+      labelPlacement= "stacked" 
+      placeholder= " Ingresa tu email" 
+      formControlName="email">
+      </ion-input>
+    </ion-item>
+
+    <div>
+      <ng-container *ngFor="let validation of validation_messages.email">
+        <div
+          *ngIf="(loginForm.get('email')?.hasError(validation.type) && loginForm.get('email')?.touched)"
+          class="error-message">
+          <ion-icon name="alert-circle" color="danger"></ion-icon>
+          {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+
+    <ion-item>
+      <ion-input 
+      label= "Contraseña" 
+      labelPlacement= "stacked" 
+      type= "password"
+      placeholder= " Ingresa tu contraseña" 
+      formControlName= "password">
+    </ion-input>
+    </ion-item>
+
+    <div>
+      <ng-container *ngFor="let validation of validation_messages.password">
+        <div
+          *ngIf="(loginForm.get('password')?.hasError(validation.type) && loginForm.get('password')?.touched)"
+          class="error-message">
+          <ion-icon name="alert-circle" color="danger"></ion-icon>
+          {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+
+    <ion-button 
+    expand="full"
+    shape="round"
+    color="success"
+    [disabled]="!loginForm.valid"
+    type="submit"
+    >
+      Login
+    </ion-button>
+  </form>
+  <div *ngIf="errorMessage" class="login-error">
+    <ion-icon name="alert-circle"></ion-icon>
+    {{ errorMessage }}
+  </div>
+
+  <div class="register-section ion-text-center ion-margin-top">
+    <p>¿Nuevo aquí? <button class="register-button" (click)="goToRegister()">Regístrate gratis</button></p>
+  </div>
+</ion-content>
