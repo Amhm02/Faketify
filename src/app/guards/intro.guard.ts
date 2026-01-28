@@ -17,6 +17,8 @@ export class IntroGuard implements CanActivate {
   }
 }
 
+
+@Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
   constructor(
     private storage: StorageService,
