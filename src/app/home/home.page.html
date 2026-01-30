@@ -1,36 +1,27 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-        Intro
-      </ion-button>
-      <ion-menu-button menu = "main-menu"></ion-menu-button>
-    </ion-buttons>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
 
-    <ion-title class="ion-text-center" >
-      HOME
-    </ion-title>
+        <ion-title class="ion-text-center">
+            HOME
+        </ion-title>
 
-    <ion-buttons slot="end">
-      <app-theme-button></app-theme-button>
-    </ion-buttons>
-  </ion-toolbar>
+        <ion-buttons slot="end">
+            <app-theme-button></app-theme-button>
+        </ion-buttons>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <swiper-container 
-    pagination="true"
-    pagination-clickable="true"
-    loop="true" 
-    slides-per-view="1"
-  >
-    <swiper-slide *ngFor="let genre of genres">
-      <div class="slide-content">
-        <h2>{{genre.title}}</h2>
-        <img [src]="genre.image" [alt]="genre.title" />
-        <p>{{genre.description}}</p>
-      </div>
-    </swiper-slide>
-  </swiper-container>
-
+    <swiper-container pagination="true" pagination-clickable="true" slides-per-view="1">
+        <swiper-slide *ngFor="let genre of genres">
+            <div class="slide-content">
+                <h2>{{genre.title}}</h2>
+                <img [src]="genre.image" [alt]="genre.title" ng-skip-optimization />
+                <p>{{genre.description}}</p>
+            </div>
+        </swiper-slide>
+    </swiper-container>
+</ion-content>

@@ -1,23 +1,38 @@
 import { Injectable } from '@angular/core';
-import { accessibilitySharp } from 'ionicons/icons';
+import { StorageService } from '../storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Auth {
 
-  constructor(){}
+  constructor(private storage: StorageService) { }
 
-  loginUser(credentials: any){
-    return new Promise ((accept, reject) =>{
-      if (
-        credentials.email == "andy.hm02@gmail.com" &&
-        credentials.password == "876543210"
-      ){
-        accept ("Login correcto")
-      } else {
-        reject ("Login incorrecto")
-      }
-    })
-  }  
+  async loginUser(credentials: any) {
+    console.log('Intentando login con:', credentials);
+    const registeredUser = await this.storage.get('user');
+    console.log('Usuario registrado recuperado:', registeredUser);
+
+    if (registeredUser &&
+      credentials.email === registeredUser.email &&
+      credentials.password === registeredUser.password) {
+      console.log('Login exitoso');
+      return Promise.resolve("Login correcto");
+    } else {
+      console.log('Login fallido: credenciales no coinciden');
+      return Promise.reject("Login incorrecto");
+    }
+  }
+
+  async registerUser(userData: any) {
+    console.log('Registrando usuario:', userData);
+    try {
+      await this.storage.set('user', userData);
+      console.log('Usuario guardado en storage');
+      return Promise.resolve("Registro exitoso");
+    } catch (error) {
+      console.error('Error al guardar usuario:', error);
+      return Promise.reject("Error en el registro");
+    }
+  }
 }

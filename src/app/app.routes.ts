@@ -1,7 +1,23 @@
 import { Routes } from '@angular/router';
-import { IntroGuard, AuthGuard } from './guards/intro.guard';
+import { introGuard, authGuard } from './guards/intro.guard';
 
 export const routes: Routes = [
+  {
+    path: 'menu',
+    loadComponent: () => import('./menu/menu.page').then(m => m.MenuPage),
+    canActivate: [authGuard, introGuard],
+    children: [
+      {
+        path: 'home',
+        loadComponent: () => import('./home/home.page').then(m => m.HomePage),
+      },
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      }
+    ]
+  },
   {
     path: '',
     redirectTo: 'menu/home',
@@ -9,21 +25,15 @@ export const routes: Routes = [
   },
   {
     path: 'intro',
-    loadComponent: () => import('./intro/intro.page').then(m => m.IntroPage)
+    loadComponent: () => import('./intro/intro.page').then(m => m.IntroPage),
+    canActivate: [authGuard]
   },
   {
     path: 'login',
     loadComponent: () => import('./login/login.page').then(m => m.LoginPage)
   },
   {
-    path: 'menu',
-    loadComponent: () => import('./menu/menu.page').then( m => m.MenuPage),
-    children: [
-      {
-        path: 'home',
-        loadComponent: () => import('./home/home.page').then(m => m.HomePage),
-        canActivate: [IntroGuard, AuthGuard]
-      },
-    ]
+    path: 'register',
+    loadComponent: () => import('./register/register.page').then(m => m.RegisterPage)
   },
 ];
