@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon, IonMenuButton } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
 import { ThemeService } from '../services/theme.service';
 import { StorageService } from '../storage.service';
 import { Router } from '@angular/router';
 import { ThemeButtonComponent } from '../components/theme-button/theme-button.component';
+import { Music } from '../services/music'
+import { albums, albumsSharp } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon, IonMenuButton, ThemeButtonComponent],
+  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton, ThemeButtonComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomePage implements OnInit {
@@ -38,20 +40,32 @@ export class HomePage implements OnInit {
       image: 'assets/apocalyptica.webp',
       description: 'Apocalyptica es una banda de metal alternativo y chelo metal formada en Helsinki en 1992 por cuatro violonchelistas graduados de la academia de música clásica Sibelius.​ Es conocida por tocar canciones de hard rock/heavy metal con violonchelos.'
     }
-  ];
+  ]
+
+  tracks: any;
 
   constructor(
     private themeService: ThemeService,
     private storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private Music: Music
   ) { }
 
   async ngOnInit() {
     await this.themeService.init();
+    this.loadTracks();
   }
 
   async goBack() {
+    this.loadTracks();
     await this.storageService.remove('intro_seen');
     this.router.navigateByUrl("/intro");
+  }
+
+  loadTracks(){
+    this.Music.getTracks().then(tracks =>{
+      this.tracks = tracks;
+      console.log(this.tracks, "las canciones")
+    })
   }
 }

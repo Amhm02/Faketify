@@ -12,6 +12,10 @@ export const routes: Routes = [
         loadComponent: () => import('./home/home.page').then(m => m.HomePage),
       },
       {
+        path: 'artists',
+        loadComponent: () => import('./artists/artists.page').then( m => m.ArtistsPage)
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'
@@ -35,5 +39,5 @@ export const routes: Routes = [
   {
     path: 'register',
     loadComponent: () => import('./register/register.page').then(m => m.RegisterPage)
-  },
+  }
 ];
