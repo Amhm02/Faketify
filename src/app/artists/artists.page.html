@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end">
+    <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title class="ion-text-center">Artistas</ion-title>
@@ -14,23 +14,20 @@
     [(ngModel)]="searchQuery">
   </ion-searchbar>
 
-  <!-- Estado de carga -->
   <div *ngIf="loading" class="loader-container">
     <ion-spinner name="crescent"></ion-spinner>
     <ion-text>Cargando artistas...</ion-text>
   </div>
 
-  <!-- Mensaje de error -->
   <div *ngIf="error" class="error-message">
     <ion-text color="danger">{{ error }}</ion-text>
   </div>
 
-  <!-- Lista de artistas -->
   <div *ngIf="!loading && artists.length > 0" class="artists-container">
     <swiper-container
       pagination="true"
       pagination-clickable="true"
-      loop="false"
+      loop="true"
       slides-per-view="1"
       breakpoints='{"640": {"slidesPerView": 2}, "1024": {"slidesPerView": 3}, "1400": {"slidesPerView": 4}}'>
       
@@ -49,10 +46,10 @@
             </p>
             <div class="artist-stats">
               <span *ngIf="artist.followers" class="stat">
-                👥 {{ artist.followers | number }}
+                {{ artist.followers | number }}
               </span>
               <span *ngIf="artist.popularity" class="stat">
-                ⭐ {{ artist.popularity }}%
+                {{ artist.popularity }}%
               </span>
             </div>
           </div>
@@ -61,8 +58,7 @@
     </swiper-container>
   </div>
 
-  <!-- Sin resultados -->
   <div *ngIf="!loading && artists.length === 0 && !error" class="no-results">
-    <ion-text color="medium">No se encontraron artistas</ion-text>
+    <ion-text color="medium"> No se encontraron artistas </ion-text>
   </div>
 </ion-content>

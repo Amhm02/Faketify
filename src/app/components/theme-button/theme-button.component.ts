@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonButton, IonIcon } from '@ionic/angular/standalone';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController } from '@ionic/angular/standalone';
 import { ThemeService } from '../../services/theme.service';
 import { addIcons } from 'ionicons';
 import { colorPalette, sunny, moon, heart, star, close } from 'ionicons/icons';

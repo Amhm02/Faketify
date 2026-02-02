@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon [icon]="closeIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title> Songs ({{ songs?.length || 0 }})</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list *ngIf="songs?.length; else noSongs">
+    <ion-item *ngFor="let s of songs; let i = index">
+      <ion-label>
+        <h3>{{ s.title || s.name || ('Track ' + (i+1)) }}</h3>
+        <p *ngIf="s.artist">{{ s.artist }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="play(s)">
+          <ion-icon [icon]="playIcon"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ng-template #noSongs>
+    <div class="no-songs">
+      <p>No songs available.</p>
+    </div>
+  </ng-template>
+</ion-content>

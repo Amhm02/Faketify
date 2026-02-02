@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonSpinner, IonText, IonSearchbar } from '@ionic/angular/standalone';
 import { MusicApiService } from '../services/music-api.service';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-artists',
@@ -30,12 +31,13 @@ export class ArtistsPage implements OnInit {
   error: string = '';
   searchQuery: string = '';
 
-  constructor(private musicApiService: MusicApiService) {
+  constructor(private musicApiService: MusicApiService, private themeService: ThemeService) {
     console.log('ArtistsPage: constructor');
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log('ArtistsPage: ngOnInit');
+    await this.themeService.init();
     this.loadArtists();
   }
 

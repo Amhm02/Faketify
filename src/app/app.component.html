@@ -1,3 +1,9 @@
 <ion-app>
+  <!-- Debug banner: shows last router event and any runtime errors -->
+  <div style="position:fixed;left:12px;right:12px;top:12px;z-index:9999;padding:8px;border-radius:6px;background:rgba(0,0,0,0.6);color:#fff;font-size:12px;" *ngIf="lastError || lastRouterEvent">
+    <div *ngIf="lastError"><strong style="color:#ff7777">Error:</strong> {{ lastError }}</div>
+    <div *ngIf="lastRouterEvent"><strong style="color:#77dd77">Router:</strong> {{ lastRouterEvent }}</div>
+  </div>
+
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

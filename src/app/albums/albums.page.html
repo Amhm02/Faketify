@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title class="ion-text-center"> Home </ion-title>
+        <ion-title class="ion-text-center"> Álbumes </ion-title>
         <ion-buttons slot="end">
             <app-theme-button></app-theme-button>
         </ion-buttons>
@@ -11,18 +11,17 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <swiper-container 
+  <swiper-container 
     pagination = "true"
     loop = "true"
     pagination-clickable = "true"
-    slides-per-view = "1"
+    slides-per-view = "3"
     >
-    <swiper-slide *ngFor="let genre of genres">
+    <swiper-slide *ngFor="let album of albums" (click)="showSongs(album.id)">
         <div class="slide-content">
-            <h2>{{genre.title}}</h2>
-            <img [src]="genre.image" [alt]="genre.title" ng-skip-optimization />
-            <p>{{genre.description}}</p>
+            <img [src]="album.image" ng-skip-optimization/>
+            <p>{{album.name}}</p>
         </div>
     </swiper-slide>
-    </swiper-container>
+  </swiper-container>
 </ion-content>

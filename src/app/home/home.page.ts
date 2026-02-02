@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton, ModalController } from '@ionic/angular/standalone';
 import { ThemeService } from '../services/theme.service';
 import { StorageService } from '../storage.service';
 import { Router } from '@angular/router';
 import { ThemeButtonComponent } from '../components/theme-button/theme-button.component';
 import { Music } from '../services/music'
 import { albums, albumsSharp } from 'ionicons/icons';
+import { SongsModalPage } from '../songs-modal/songs-modal.page';
 
 @Component({
   selector: 'app-home',
@@ -43,15 +44,19 @@ export class HomePage implements OnInit {
   ]
 
   tracks: any;
+  albums: any;
+  localArtists: any;
 
   constructor(
     private themeService: ThemeService,
     private storageService: StorageService,
     private router: Router,
-    private Music: Music
+    private Music: Music,
+    private modalCtrl: ModalController
   ) { }
 
   async ngOnInit() {
+    this.getLocalArtists();
     await this.themeService.init();
     this.loadTracks();
   }
@@ -68,4 +73,22 @@ export class HomePage implements OnInit {
       console.log(this.tracks, "las canciones")
     })
   }
+
+  getLocalArtists(){
+    this.localArtists = this.Music.getLocalArtists();
+    console.log(this.localArtists);
+  }
+
+  async showSongs(albumId: string){
+    console.log("album id: ", albumId)
+    const songs = await this.Music.getSongsByAlbum(albumId);
+    console.log("songs: ", songs)
+    const modal = await this.modalCtrl.create({
+      component: SongsModalPage,
+      componentProps: {
+        songs: songs}
+  });
+  modal.present();
+  }
+
 }
