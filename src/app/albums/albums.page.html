@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Álbumes</ion-title>
+    <ion-buttons slot="end">
+      <app-theme-button></app-theme-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let album of albums" (click)="showSongs(album)">
+      <ion-thumbnail slot="start">
+        <img [src]="album.image || album.cover || album.cover_url || 'assets/placeholder-album.png'" />
+      </ion-thumbnail>
+
+      <ion-label>
+        <h2>{{ album.title || album.name }}</h2>
+        <p>{{ album.artist || album.artist_name || album.artistName || 'Artista desconocido' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

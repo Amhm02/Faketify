@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Artistas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar
+    placeholder="Buscar artistas..."
+    (ionChange)="onSearchChange($event)"
+    [(ngModel)]="searchQuery">
+  </ion-searchbar>
+
+  <div *ngIf="loading" class="loader-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <ion-text>Cargando artistas...</ion-text>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <ion-text color="danger">{{ error }}</ion-text>
+  </div>
+
+  <div *ngIf="!loading && artists.length > 0" class="artists-container">
+    <swiper-container
+      pagination="true"
+      pagination-clickable="true"
+      loop="true"
+      slides-per-view="1"
+      breakpoints='{"640": {"slidesPerView": 2}, "1024": {"slidesPerView": 3}, "1400": {"slidesPerView": 4}}'>
+      
+      <swiper-slide *ngFor="let artist of artists">
+        <div class="artist-card">
+          <div class="artist-image-container">
+            <img 
+              [src]="artist.image || 'assets/placeholder.png'" 
+              alt="{{ artist.name }}"
+              class="artist-image"/>
+          </div>
+          <div class="artist-info">
+            <h3 class="artist-name">{{ artist.name }}</h3>
+            <p class="artist-genres" *ngIf="artist.genres">
+              {{ artist.genres.join(', ') }}
+            </p>
+            <div class="artist-stats">
+              <span *ngIf="artist.followers" class="stat">
+                {{ artist.followers | number }}
+              </span>
+              <span *ngIf="artist.popularity" class="stat">
+                {{ artist.popularity }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </swiper-slide>
+    </swiper-container>
+  </div>
+
+  <div *ngIf="!loading && artists.length === 0 && !error" class="no-results">
+    <ion-text color="medium"> No se encontraron artistas </ion-text>
+  </div>
+</ion-content>

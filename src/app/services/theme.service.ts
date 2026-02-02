@@ -1,31 +1,33 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage.service';
+import { BehaviorSubject } from 'rxjs';
 
 export const THEME_KEY = 'selected-theme';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private current: string = 'light';
+  private current = new BehaviorSubject<string>('light');
+  theme$ = this.current.asObservable();
 
   constructor(private storage: StorageService) {}
 
   async init() {
     const saved = await this.storage.get(THEME_KEY);
     if (saved) {
-      this.current = saved;
+      this.current.next(saved);
       this.applyTheme(saved);
     } else {
-      this.current = 'light';
+      this.current.next('light');
       this.applyTheme('light');
     }
   }
 
   getTheme(): string {
-    return this.current;
+    return this.current.value;
   }
 
   async setTheme(theme: string) {
-    this.current = theme;
+    this.current.next(theme);
     await this.storage.set(THEME_KEY, theme);
     this.applyTheme(theme);
   }
@@ -43,3 +45,4 @@ export class ThemeService {
     }
   }
 }
+
