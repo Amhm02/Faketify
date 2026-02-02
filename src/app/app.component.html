@@ -1,9 +1,42 @@
 <ion-app>
-  <!-- Debug banner: shows last router event and any runtime errors -->
-  <div style="position:fixed;left:12px;right:12px;top:12px;z-index:9999;padding:8px;border-radius:6px;background:rgba(0,0,0,0.6);color:#fff;font-size:12px;" *ngIf="lastError || lastRouterEvent">
-    <div *ngIf="lastError"><strong style="color:#ff7777">Error:</strong> {{ lastError }}</div>
-    <div *ngIf="lastRouterEvent"><strong style="color:#77dd77">Router:</strong> {{ lastRouterEvent }}</div>
-  </div>
-
   <ion-router-outlet></ion-router-outlet>
+
+  <ion-footer class="global-player" *ngIf="currentSong">
+    <ion-grid>
+      <ion-row>
+        <ion-col class="ion-text-start"> 0:00 </ion-col>
+        <ion-col class="ion-text-end"> 0:30 </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-progress-bar [value]="0.5"></ion-progress-bar>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="1">
+          <ion-icon name="heart-outline"></ion-icon>
+        </ion-col>
+
+        <ion-col size="10">
+          <ion-text>
+            {{ currentSong?.name || currentSong?.title || 'Selecciona una canción' }}
+          </ion-text>
+        </ion-col>
+
+        <ion-col size="1">
+          <ion-icon
+            name="play"
+            *ngIf="!currentSong?.playing"
+            (click)="play()">
+          </ion-icon>
+
+          <ion-icon
+            name="pause"
+            *ngIf="currentSong?.playing"
+            (click)="pause()">
+          </ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-footer>
 </ion-app>

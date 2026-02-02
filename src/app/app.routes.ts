@@ -16,6 +16,10 @@ export const routes: Routes = [
         loadComponent: () => import('./artists/artists.page').then( m => m.ArtistsPage)
       },
       {
+        path: 'albums',
+        loadComponent: () => import('./albums/albums.page').then( m => m.AlbumsPage)
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'
@@ -39,10 +43,6 @@ export const routes: Routes = [
   {
     path: 'register',
     loadComponent: () => import('./register/register.page').then(m => m.RegisterPage)
-  },
-  {
-    path: 'albums',
-    loadComponent: () => import('./albums/albums.page').then( m => m.AlbumsPage)
   },
   {
     path: 'songs-modal',

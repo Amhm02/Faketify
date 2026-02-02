@@ -11,13 +11,13 @@
 
 <ion-content [fullscreen]="true">
   <ion-list *ngIf="songs?.length; else noSongs">
-    <ion-item *ngFor="let s of songs; let i = index">
+    <ion-item button *ngFor="let s of songs; let i = index" (click)="selectSong(s)">
       <ion-label>
         <h3>{{ s.title || s.name || ('Track ' + (i+1)) }}</h3>
         <p *ngIf="s.artist">{{ s.artist }}</p>
       </ion-label>
       <ion-buttons slot="end">
-        <ion-button (click)="play(s)">
+        <ion-button (click)="$event.stopPropagation(); play(s)">
           <ion-icon [icon]="playIcon"></ion-icon>
         </ion-button>
       </ion-buttons>

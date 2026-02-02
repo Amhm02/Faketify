@@ -1,21 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton, ModalController } from '@ionic/angular/standalone';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButtons,
+  IonMenuButton,
+  ModalController
+} from '@ionic/angular/standalone';
 import { ThemeService } from '../services/theme.service';
 import { StorageService } from '../storage.service';
 import { Router } from '@angular/router';
 import { ThemeButtonComponent } from '../components/theme-button/theme-button.component';
-import { Music } from '../services/music'
-import { albums, albumsSharp } from 'ionicons/icons';
+import { Music } from '../services/music';
 import { SongsModalPage } from '../songs-modal/songs-modal.page';
+import { PlayerService } from '../services/player.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonMenuButton, ThemeButtonComponent],
+  imports: [
+    CommonModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonButtons,
+    IonMenuButton,
+    ThemeButtonComponent
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomePage implements OnInit {
@@ -34,29 +50,33 @@ export class HomePage implements OnInit {
     {
       title: 'Metal gótico',
       image: 'assets/lord.jpg',
-      description: 'Lord of the Lost es una banda alemana de metal gótico procedente de Hamburgo y creada en 2007 como un proyecto en solitario en manos del músico Chris "The Lord" Harms, quien anteriormente había sido cantante y guitarrista del grupo de rock Philiae y también guitarrista y segundo vocalista del grupo de glam metal The Pleasures.'
+      description: 'Lord of the Lost es una banda alemana de metal gótico procedente de Hamburgo y creada en 2007 como un proyecto en solitario en manos del músico Chris "The Lord" Harms.'
     },
     {
       title: 'Chelo metal',
       image: 'assets/apocalyptica.webp',
-      description: 'Apocalyptica es una banda de metal alternativo y chelo metal formada en Helsinki en 1992 por cuatro violonchelistas graduados de la academia de música clásica Sibelius.​ Es conocida por tocar canciones de hard rock/heavy metal con violonchelos.'
+      description: 'Apocalyptica es una banda de metal alternativo y chelo metal formada en Helsinki en 1992.'
     }
-  ]
+  ];
 
-  tracks: any;
-  albums: any;
-  localArtists: any;
+  tracks: any[] = [];
+  albums: any[] = [];
+  song: any = null;
 
   constructor(
     private themeService: ThemeService,
     private storageService: StorageService,
     private router: Router,
     private Music: Music,
-    private modalCtrl: ModalController
-  ) { }
+    private modalCtrl: ModalController,
+    private player: PlayerService
+  ) {
+    this.player.song$.subscribe(song => {
+      this.song = song;
+    });
+  }
 
   async ngOnInit() {
-    this.getLocalArtists();
     await this.themeService.init();
     this.loadTracks();
   }
@@ -64,31 +84,48 @@ export class HomePage implements OnInit {
   async goBack() {
     this.loadTracks();
     await this.storageService.remove('intro_seen');
-    this.router.navigateByUrl("/intro");
+    this.router.navigateByUrl('/intro');
   }
 
-  loadTracks(){
-    this.Music.getTracks().then(tracks =>{
+  loadTracks() {
+    this.Music.getTracks$().subscribe(tracks => {
       this.tracks = tracks;
-      console.log(this.tracks, "las canciones")
-    })
+      console.log('Las canciones:', this.tracks);
+    });
   }
 
-  getLocalArtists(){
-    this.localArtists = this.Music.getLocalArtists();
-    console.log(this.localArtists);
+  async showSongs(albumId: string) {
+    console.log('album id:', albumId);
+
+    this.Music.getSongsByAlbum$(albumId).subscribe(async songs => {
+      console.log('songs:', songs);
+
+      const modal = await this.modalCtrl.create({
+        component: SongsModalPage,
+        componentProps: { songs }
+      });
+
+      await modal.present();
+
+      const { data } = await modal.onDidDismiss();
+      if (data) {
+        this.player.setSong(data);
+      }
+    });
   }
 
-  async showSongs(albumId: string){
-    console.log("album id: ", albumId)
-    const songs = await this.Music.getSongsByAlbum(albumId);
-    console.log("songs: ", songs)
-    const modal = await this.modalCtrl.create({
-      component: SongsModalPage,
-      componentProps: {
-        songs: songs}
-  });
-  modal.present();
+  play() {
+    this.player.play();
   }
 
+  pause() {
+    this.player.pause();
+  }
+
+  formatTime(seconds: number){
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
 }

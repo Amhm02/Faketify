@@ -1,28 +1,17 @@
 import { inject } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
+import { Router, CanActivateFn, UrlTree } from '@angular/router';
 import { StorageService } from '../storage.service';
 
-export const introGuard: CanActivateFn = async () => {
+export const introGuard: CanActivateFn = async (): Promise<boolean | UrlTree> => {
   const storage = inject(StorageService);
   const router = inject(Router);
   const seen = await storage.get('intro_seen');
-  console.log('introGuard: intro_seen =', seen);
-  if (!seen) {
-    router.navigateByUrl('/intro');
-    return false;
-  }
-  return true;
+  return seen || router.parseUrl('/intro');
 };
 
-export const authGuard: CanActivateFn = async () => {
+export const authGuard: CanActivateFn = async (): Promise<boolean | UrlTree> => {
   const storage = inject(StorageService);
   const router = inject(Router);
   const isLogged = await storage.get('login');
-  console.log('authGuard: login =', isLogged);
-  if (isLogged) {
-    return true;
-  } else {
-    router.navigateByUrl('/login');
-    return false;
-  }
+  return isLogged || router.parseUrl('/login');
 };

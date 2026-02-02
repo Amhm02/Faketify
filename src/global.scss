@@ -32,3 +32,15 @@ body, ion-app, ion-content, ion-toolbar, .slide-content {
 ion-toolbar {
   transition: background-color 320ms ease, color 320ms ease;
 }
+
+/* Global player footer: fixed to bottom to ensure consistent placement */
+.global-player {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  padding: 8px 12px;
+  background: var(--ion-background-color);
+  box-shadow: 0 -6px 18px rgba(0,0,0,0.06);
+}

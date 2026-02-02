@@ -29,6 +29,7 @@ import { Router, RouterModule } from '@angular/router';
     RouterModule
   ]
 })
+
 export class MenuPage implements OnInit {
 
   constructor(
@@ -43,7 +44,6 @@ export class MenuPage implements OnInit {
   ngOnInit() {
   }
 
-  // Prevent double navigation: navigation lock and single code path
   private navigating: boolean = false;
 
   async navigate(path: string) {
@@ -57,10 +57,8 @@ export class MenuPage implements OnInit {
       console.log('navigate(): closing menu and navigating to', path);
       await this.menu.close();
 
-      // Small delay to ensure menu closed state processed
       await new Promise(res => setTimeout(res, 50));
 
-      // Dynamic import check (optional)
       try {
         const mod = await import('../artists/artists.page');
         console.log('Dynamic import artists page succeeded:', mod);
@@ -68,7 +66,6 @@ export class MenuPage implements OnInit {
         console.warn('Dynamic import failed (non-fatal):', impErr);
       }
 
-      // Navigate via Router and await result
       try {
         const result = await this.router.navigateByUrl(path);
         console.log('router.navigateByUrl result:', result);
@@ -79,7 +76,6 @@ export class MenuPage implements OnInit {
     } catch (err) {
       console.error('Error en navigate():', err);
     } finally {
-      // keep navigating locked a tiny bit to avoid double clicks
       setTimeout(() => { this.navigating = false; }, 350);
     }
   }
