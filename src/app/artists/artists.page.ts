@@ -1,9 +1,27 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonSpinner, IonText, IonSearchbar } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonSpinner,
+  IonSearchbar,
+  IonButton,
+  IonIcon,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle
+} from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 import { MusicApiService } from '../services/music-api.service';
 import { ThemeService } from '../services/theme.service';
+import { ThemeButtonComponent } from '../components/theme-button/theme-button.component';
+import { musicalNotes, person } from 'ionicons/icons';
 
 @Component({
   selector: 'app-artists',
@@ -17,21 +35,35 @@ import { ThemeService } from '../services/theme.service';
     IonToolbar,
     IonButtons,
     IonMenuButton,
+    IonSpinner,
+    IonSearchbar,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
     CommonModule,
     FormsModule,
-    IonSpinner,
-    IonText,
-    IonSearchbar
+    ThemeButtonComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ArtistsPage implements OnInit {
   artists: any[] = [];
+  filteredArtists: any[] = [];
   loading: boolean = true;
   error: string = '';
   searchQuery: string = '';
 
-  constructor(private musicApiService: MusicApiService, private themeService: ThemeService) {
+  musicalNotesIcon = musicalNotes;
+  personIcon = person;
+
+  constructor(
+    private musicApiService: MusicApiService,
+    private themeService: ThemeService,
+    private router: Router
+  ) {
     console.log('ArtistsPage: constructor');
   }
 
@@ -44,11 +76,13 @@ export class ArtistsPage implements OnInit {
   loadArtists() {
     this.loading = true;
     this.error = '';
-    
+
     this.musicApiService.getArtists().subscribe({
       next: (data) => {
         this.artists = data;
+        this.filteredArtists = data;
         this.loading = false;
+        console.log('Artistas cargados:', this.artists);
       },
       error: (err) => {
         this.error = 'Error al cargar artistas. Por favor intente más tarde.';
@@ -58,24 +92,33 @@ export class ArtistsPage implements OnInit {
     });
   }
 
-  onSearchChange(event: any) {
-    const query = event.detail.value;
-    
-    if (!query || query.trim() === '') {
-      this.loadArtists();
+  handleSearch(event: any) {
+    const query = event.target.value.toLowerCase();
+    this.searchQuery = query;
+
+    if (!query.trim()) {
+      this.filteredArtists = this.artists;
       return;
     }
 
-    this.loading = true;
-    this.musicApiService.searchArtists(query).subscribe({
-      next: (data) => {
-        this.artists = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Error en la búsqueda.';
-        this.loading = false;
+    this.filteredArtists = this.artists.filter(artist => {
+      const name = (artist.name || '').toLowerCase();
+      const bio = (artist.bio || '').toLowerCase();
+      return name.includes(query) || bio.includes(query);
+    });
+  }
+
+  viewArtistSongs(artist: any) {
+    console.log('Navegando a canciones del artista:', artist);
+    this.router.navigate(['/menu/music'], {
+      queryParams: {
+        artistId: artist.id,
+        artistName: artist.name
       }
     });
+  }
+
+  getArtistImage(artist: any): string {
+    return artist.image || 'assets/default-artist.jpg';
   }
 }

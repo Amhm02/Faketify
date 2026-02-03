@@ -19,8 +19,23 @@ ion-action-sheet .action-sheet-button .action-sheet-icon {
 }
 
 /* Smooth theme transitions (backgrounds and text) */
-body, ion-app, ion-content, ion-toolbar, .slide-content {
+body,
+ion-app,
+ion-content,
+ion-toolbar,
+.slide-content {
   transition: background-color 320ms ease, color 320ms ease;
+}
+
+/* Smooth transitions for items and cards */
+ion-item,
+ion-card {
+  transition: background-color 320ms ease, color 320ms ease, border-color 320ms ease;
+}
+
+/* Smooth button transitions */
+ion-button {
+  transition: all 300ms ease;
 }
 
 /* Slightly smooth images and shadows for nicer visual flow */
@@ -42,5 +57,17 @@ ion-toolbar {
   z-index: 9998;
   padding: 8px 12px;
   background: var(--ion-background-color);
-  box-shadow: 0 -6px 18px rgba(0,0,0,0.06);
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.06);
+  transition: background-color 320ms ease;
+}
+
+/* Smooth scrolling */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better focus states */
+ion-input:focus-within,
+ion-textarea:focus-within {
+  transition: all 300ms ease;
 }

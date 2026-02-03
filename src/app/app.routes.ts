@@ -13,11 +13,19 @@ export const routes: Routes = [
       },
       {
         path: 'artists',
-        loadComponent: () => import('./artists/artists.page').then( m => m.ArtistsPage)
+        loadComponent: () => import('./artists/artists.page').then(m => m.ArtistsPage)
       },
       {
         path: 'albums',
-        loadComponent: () => import('./albums/albums.page').then( m => m.AlbumsPage)
+        loadComponent: () => import('./albums/albums.page').then(m => m.AlbumsPage)
+      },
+      {
+        path: 'music',
+        loadComponent: () => import('./music/music.page').then(m => m.MusicPage)
+      },
+      {
+        path: 'favorites',
+        loadComponent: () => import('./favorites/favorites.page').then(m => m.FavoritesPage)
       },
       {
         path: '',
@@ -46,6 +54,6 @@ export const routes: Routes = [
   },
   {
     path: 'songs-modal',
-    loadComponent: () => import('./songs-modal/songs-modal.page').then( m => m.SongsModalPage)
+    loadComponent: () => import('./songs-modal/songs-modal.page').then(m => m.SongsModalPage)
   }
 ];

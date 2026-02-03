@@ -1,0 +1,91 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/menu/home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ artistName || albumName || 'Música' }}</ion-title>
+    </ion-toolbar>
+
+    <!-- Searchbar -->
+    <ion-toolbar *ngIf="!loading && songs.length > 0">
+        <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="handleSearch($event)" placeholder="Buscar canciones..."
+            animated="true" debounce="300">
+        </ion-searchbar>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="music-content" [fullscreen]="true">
+    <div class="music-container">
+
+        <!-- Loading State -->
+        <div class="loading-container" *ngIf="loading">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando canciones...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-container" *ngIf="error && !loading">
+            <ion-icon [icon]="musicalNotesIcon"></ion-icon>
+            <p>{{ error }}</p>
+            <ion-button (click)="artistId ? loadSongsByArtist(artistId) : loadAllSongs()" size="small">
+                <ion-icon name="refresh" slot="start"></ion-icon>
+                Reintentar
+            </ion-button>
+        </div>
+
+        <!-- Songs List -->
+        <div class="songs-section" *ngIf="!loading && !error && filteredSongs.length > 0">
+            <div class="songs-header">
+                <h2>{{ filteredSongs.length }} {{ filteredSongs.length === 1 ? 'Canción' : 'Canciones' }}</h2>
+                <p *ngIf="searchQuery">Resultados para "{{ searchQuery }}"</p>
+            </div>
+
+            <ion-list class="songs-list">
+                <ion-item *ngFor="let song of filteredSongs; let i = index" class="song-item" (click)="playSong(song)">
+
+                    <!-- Song Number/Icon -->
+                    <div class="song-number" slot="start">
+                        <span class="number">{{ i + 1 }}</span>
+                        <ion-icon [icon]="playIcon" class="play-overlay"></ion-icon>
+                    </div>
+
+                    <!-- Song Info -->
+                    <ion-label>
+                        <h3 class="song-title">{{ song.title || song.name || 'Sin título' }}</h3>
+                        <p class="song-artist" *ngIf="song.artist">{{ song.artist }}</p>
+                        <p class="song-duration" *ngIf="song.duration">{{ formatDuration(song.duration) }}</p>
+                    </ion-label>
+
+                    <!-- Actions -->
+                    <div class="song-actions" slot="end">
+                        <!-- Favorite Button -->
+                        <ion-button fill="clear" (click)="toggleFavorite(song, $event)"
+                            [disabled]="isLoadingFavorite(song.id)" class="favorite-button">
+                            <ion-spinner *ngIf="isLoadingFavorite(song.id)" name="crescent"></ion-spinner>
+                            <ion-icon *ngIf="!isLoadingFavorite(song.id)"
+                                [icon]="isFavorite(song.id) ? heartIcon : heartOutlineIcon"
+                                [class.is-favorite]="isFavorite(song.id)">
+                            </ion-icon>
+                        </ion-button>
+                    </div>
+                </ion-item>
+            </ion-list>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-container" *ngIf="!loading && !error && filteredSongs.length === 0 && !searchQuery">
+            <ion-icon [icon]="musicalNotesIcon"></ion-icon>
+            <p>No hay canciones disponibles</p>
+        </div>
+
+        <!-- No Results State -->
+        <div class="empty-container" *ngIf="!loading && !error && filteredSongs.length === 0 && searchQuery">
+            <ion-icon name="search-outline"></ion-icon>
+            <p>No se encontraron resultados para "{{ searchQuery }}"</p>
+            <ion-button (click)="searchQuery = ''; handleSearch({target: {value: ''}})" size="small" fill="outline">
+                Limpiar búsqueda
+            </ion-button>
+        </div>
+
+    </div>
+</ion-content>

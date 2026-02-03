@@ -1,26 +1,61 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Álbumes</ion-title>
-    <ion-buttons slot="end">
-      <app-theme-button></app-theme-button>
-    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="!loading && albums.length > 0">
+    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="handleSearch($event)"
+      placeholder="Buscar álbumes o artistas..." animated="true" debounce="300">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-item *ngFor="let album of albums" (click)="showSongs(album)">
-      <ion-thumbnail slot="start">
-        <img [src]="album.image || album.cover || album.cover_url || 'assets/placeholder-album.png'" />
-      </ion-thumbnail>
+<ion-content class="albums-content" [fullscreen]="true">
+  <div class="albums-container">
 
-      <ion-label>
-        <h2>{{ album.title || album.name }}</h2>
-        <p>{{ album.artist || album.artist_name || album.artistName || 'Artista desconocido' }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Explorando discografías...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-container" *ngIf="error && !loading">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <p>{{ error }}</p>
+      <ion-button (click)="loadAlbums()" size="small" fill="outline">Reintentar</ion-button>
+    </div>
+
+    <!-- Albums Grid -->
+    <ion-grid *ngIf="!loading && !error && filteredAlbums.length > 0">
+      <ion-row>
+        <ion-col size="6" size-md="4" size-lg="3" *ngFor="let album of filteredAlbums">
+          <ion-card class="album-card" (click)="goToAlbum(album)">
+            <div class="cover-wrapper">
+              <img [src]="album.image || 'assets/default-album.jpg'" [alt]="album.name" />
+              <div class="cover-overlay">
+                <ion-icon name="library" class="view-icon"></ion-icon>
+                <span>Ver tracklist</span>
+              </div>
+            </div>
+            <div class="album-info">
+              <h3 class="album-name">{{ album.name }}</h3>
+              <p class="album-artist">{{ album.artist }}</p>
+            </div>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <!-- Empty/No Results -->
+    <div class="empty-container" *ngIf="!loading && !error && filteredAlbums.length === 0">
+      <ion-icon name="search-outline" *ngIf="searchQuery"></ion-icon>
+      <ion-icon name="albums-outline" *ngIf="!searchQuery"></ion-icon>
+      <p>{{ searchQuery ? 'No se encontraron coincidencias' : 'No hay álbumes disponibles' }}</p>
+    </div>
+
+  </div>
 </ion-content>

@@ -1,0 +1,100 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Mis Favoritos</ion-title>
+    </ion-toolbar>
+
+    <ion-toolbar *ngIf="!loading && favoriteSongs.length > 0">
+        <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="handleSearch($event)"
+            placeholder="Buscar en mis favoritos..." animated="true" debounce="300">
+        </ion-searchbar>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="favorites-content" [fullscreen]="true">
+    <ion-refresher slot="fixed" (ionRefresh)="loadFavorites($event)">
+        <ion-refresher-content [pullingIcon]="refreshIcon" pullingText="Desliza para actualizar"
+            refreshingSpinner="crescent" refreshingText="Actualizando...">
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <div class="favorites-container">
+
+        <!-- Loading State -->
+        <div class="loading-container" *ngIf="loading">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando tu biblioteca...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-container" *ngIf="error && !loading">
+            <ion-icon [icon]="musicalNotesIcon"></ion-icon>
+            <p>{{ error }}</p>
+            <ion-button (click)="loadFavorites()" size="small" fill="outline">
+                <ion-icon [icon]="refreshIcon" slot="start"></ion-icon>
+                Reintentar
+            </ion-button>
+        </div>
+
+        <!-- Empty State (No favorites at all) -->
+        <div class="empty-container" *ngIf="!loading && !error && favoriteSongs.length === 0">
+            <div class="empty-icon-wrapper">
+                <ion-icon [icon]="heartIcon" class="big-heart"></ion-icon>
+            </div>
+            <h2>Aún no tienes favoritos</h2>
+            <p>Las canciones que marques con un corazón aparecerán aquí para que las escuches siempre.</p>
+            <ion-button routerLink="/menu/home" expand="block" class="explore-btn">
+                Explorar música
+            </ion-button>
+        </div>
+
+        <!-- Favorites List -->
+        <div class="songs-section" *ngIf="!loading && !error && favoriteSongs.length > 0">
+
+            <div class="favorites-header" *ngIf="filteredSongs.length > 0">
+                <div class="header-info">
+                    <span class="count">{{ filteredSongs.length }} {{ filteredSongs.length === 1 ? 'Canción' :
+                        'Canciones' }}</span>
+                </div>
+            </div>
+
+            <!-- No Search Results -->
+            <div class="empty-container" *ngIf="filteredSongs.length === 0 && searchQuery">
+                <ion-icon [icon]="searchIcon"></ion-icon>
+                <p>No encontramos "{{ searchQuery }}" en tus favoritos</p>
+            </div>
+
+            <ion-list class="songs-list" *ngIf="filteredSongs.length > 0">
+                <ion-item *ngFor="let song of filteredSongs; let i = index" class="song-item" (click)="playSong(song)">
+
+                    <!-- Song Artwork/Icon -->
+                    <div class="song-artwork" slot="start">
+                        <img [src]="song.image || 'assets/default-track.jpg'" alt="Artwork" *ngIf="song.image" />
+                        <div class="placeholder-art" *ngIf="!song.image">
+                            <ion-icon [icon]="musicalNotesIcon"></ion-icon>
+                        </div>
+                        <div class="play-overlay">
+                            <ion-icon [icon]="playIcon"></ion-icon>
+                        </div>
+                    </div>
+
+                    <!-- Song Info -->
+                    <ion-label>
+                        <h3 class="song-title">{{ song.name || song.title || 'Sin título' }}</h3>
+                        <p class="song-artist">{{ song.artist || 'Artista desconocido' }}</p>
+                    </ion-label>
+
+                    <!-- Actions -->
+                    <div class="song-actions" slot="end">
+                        <ion-button fill="clear" (click)="removeFavorite(song, $event)" class="remove-btn">
+                            <ion-icon [icon]="trashIcon" slot="icon-only"></ion-icon>
+                        </ion-button>
+                    </div>
+                </ion-item>
+            </ion-list>
+        </div>
+
+    </div>
+</ion-content>

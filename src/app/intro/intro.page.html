@@ -1,31 +1,77 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title class="ion-text-center"> Introducción</ion-title>
+    <ion-title class="ion-text-center">
+      <span class="app-logo">
+        <ion-icon name="musical-notes"></ion-icon>
+        Faketify
+      </span>
+    </ion-title>
     <ion-buttons slot="end">
       <app-theme-button></app-theme-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding ion-text-center intro-page" [class.theme-dark]="slideTheme === 'dark'"
-  [class.theme-rosa]="slideTheme === 'rosa'" [class.theme-amarillo]="slideTheme === 'amarillo'">
+<ion-content class="intro-content" [class.theme-dark]="slideTheme === 'dark'" [class.theme-rosa]="slideTheme === 'rosa'"
+  [class.theme-amarillo]="slideTheme === 'amarillo'">
 
-  <div class="container-center">
-    <swiper-container pagination="true" slides-per-view="1">
-      <swiper-slide *ngFor="let slide of slides; let i = index">
-        <div class="slide-content card" [class.theme-dark]="slideTheme === 'dark'"
-          [class.theme-rosa]="slideTheme === 'rosa'" [class.theme-amarillo]="slideTheme === 'amarillo'">
-          <h2>{{slide.title}}</h2>
-          <h3 class="subtitle">{{slide.description}}</h3>
-          <img [src]="slide.image" [alt]="slide.title" ng-skip-optimization />
+  <div class="intro-wrapper">
+    <div class="intro-container">
+
+      <!-- Progress Indicators (Fixed) -->
+      <div class="slide-progress">
+        <div class="progress-dots">
+          <span *ngFor="let slide of slides; let i = index" class="progress-dot" [class.active]="i === currentSlide"
+            [class.completed]="i < currentSlide">
+          </span>
         </div>
-      </swiper-slide>
-    </swiper-container>
+      </div>
 
-    <div class="actions ion-margin-top">
-      <ion-button expand="block" color="primary" (click)="startApp()">Ir al Home</ion-button>
-      <ion-button expand="block" color="medium" fill="clear" (click)="resetIntroSeen()">Borrar registro de Intro (ver de
-        nuevo)</ion-button>
+      <!-- Dynamic Content Area -->
+      <div class="slide-content-area">
+        <!-- Title -->
+        <h1 class="slide-title">{{ currentSlideData.title }}</h1>
+
+        <!-- Image -->
+        <div class="slide-image-section">
+          <div class="image-container">
+            <img [src]="currentSlideData.image" [alt]="currentSlideData.title" ng-skip-optimization />
+            <div class="image-decoration"></div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="slide-description-section">
+          <p class="slide-description">{{ currentSlideData.description }}</p>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons (Fixed) -->
+      <div class="slide-actions">
+        <!-- Next/Start Button -->
+        <ion-button *ngIf="!isLastSlide" expand="block" shape="round" class="primary-action-btn" (click)="nextSlide()">
+          <span>Siguiente</span>
+          <ion-icon name="arrow-forward" slot="end"></ion-icon>
+        </ion-button>
+
+        <ion-button *ngIf="isLastSlide" expand="block" shape="round" class="primary-action-btn start-btn"
+          (click)="startApp()">
+          <ion-icon name="rocket-outline" slot="start"></ion-icon>
+          <span>Comenzar</span>
+        </ion-button>
+
+        <!-- Reset Link (only on last slide) -->
+        <button *ngIf="isLastSlide" class="reset-link" (click)="resetIntroSeen()">
+          <ion-icon name="refresh-outline"></ion-icon>
+          <span>Ver introducción nuevamente</span>
+        </button>
+
+        <!-- Back Button (not on first slide) -->
+        <button *ngIf="currentSlide > 0 && !isLastSlide" class="back-link" (click)="previousSlide()">
+          <ion-icon name="arrow-back"></ion-icon>
+          <span>Anterior</span>
+        </button>
+      </div>
     </div>
   </div>
 </ion-content>

@@ -1,19 +1,11 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonMenuButton
-} from '@ionic/angular/standalone';
-import { ModalController } from '@ionic/angular/standalone';
-import { ThemeService } from '../services/theme.service';
-import { Music } from '../services/music';
-import { PlayerService } from '../services/player.service';
-import { ThemeButtonComponent } from '../components/theme-button/theme-button.component';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonIcon, IonSearchbar, IonSpinner, IonCard, IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { MusicApiService } from '../services/music-api.service';
+import { Router } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { library, search, albums } from 'ionicons/icons';
 
 @Component({
   selector: 'app-albums',
@@ -27,61 +19,85 @@ import { ThemeButtonComponent } from '../components/theme-button/theme-button.co
     IonToolbar,
     IonButtons,
     IonMenuButton,
+    IonIcon,
+    IonSearchbar,
+    IonSpinner,
+    IonCard,
+    IonGrid,
+    IonRow,
+    IonCol,
     CommonModule,
-    FormsModule,
-    ThemeButtonComponent
+    FormsModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AlbumsPage implements OnInit {
-
   albums: any[] = [];
+  filteredAlbums: any[] = [];
+  loading: boolean = true;
+  error: string = '';
+  searchQuery: string = '';
 
   constructor(
-    private themeService: ThemeService,
-    private Music: Music,
-    private modalCtrl: ModalController,
-    private player: PlayerService
-  ) {}
+    private musicApi: MusicApiService,
+    private router: Router
+  ) {
+    addIcons({ library, search, albums });
+  }
 
-  async ngOnInit() {
-    await this.themeService.init();
+  ngOnInit() {
     this.loadAlbums();
   }
 
   loadAlbums() {
-  this.Music.getAlbums$().subscribe(albums => {
-    this.albums = albums;
-    console.log('albums completos:', this.albums);
-  });
-}
+    this.loading = true;
+    this.musicApi.getArtists().subscribe({ // Usamos artists o si hay un endpoint de albums directo mejor
+      next: () => {
+        // Como la API no tiene un endpoint /albums directo (según MusicApiService), 
+        // pero el servicio Music sí lo tiene, vamos a usar el catálogo de canciones 
+        // para agrupar o simplemente usar el endpoint de Music service si existe.
+        // Pero para ser consistente con MusicApiService:
+        this.musicApi.getTracks().subscribe({
+          next: (tracks) => {
+            // Agrupar tracks por album_id para simular una lista de álbumes si no hay endpoint directo
+            const albumMap = new Map();
+            tracks.forEach(track => {
+              if (track.album_id && !albumMap.has(track.album_id)) {
+                albumMap.set(track.album_id, {
+                  id: track.album_id,
+                  name: `Álbum #${track.album_id}`,
+                  artist: track.artist || 'Varios Artistas',
+                  image: track.image || track.cover_url || null
+                });
+              }
+            });
+            this.albums = Array.from(albumMap.values());
+            this.filteredAlbums = [...this.albums];
+            this.loading = false;
+          },
+          error: () => {
+            this.error = 'Error al cargar álbumes';
+            this.loading = false;
+          }
+        });
+      }
+    });
+  }
 
-  async showSongs(album: any) {
-    console.log('album seleccionado: ', album);
+  handleSearch(event: any) {
+    const query = event.target.value.toLowerCase();
+    this.searchQuery = query;
+    this.filteredAlbums = this.albums.filter(a =>
+      a.name.toLowerCase().includes(query) ||
+      a.artist.toLowerCase().includes(query)
+    );
+  }
 
-    this.Music.getSongsByAlbum$(album.id).subscribe(async songs => {
-      console.log('songs: ', songs);
-
-      const modal = await this.modalCtrl.create({
-        component: (await import('../songs-modal/songs-modal.page')).SongsModalPage,
-        componentProps: { songs }
-      });
-
-      await modal.present();
-
-      const { data } = await modal.onDidDismiss();
-      console.log('modal.onDidDismiss returned:', data);
-
-      if (data) {
-        console.log('Selected song from modal:', data);
-
-        const songWithArtist = {
-          ...data,
-          artist: album.artist || album.artist_name || album.artistName || `Artista #${data.artist_id}`
-        };
-
-        this.player.setSong(songWithArtist);
-        console.log('Published selected song to PlayerService:', songWithArtist);
+  goToAlbum(album: any) {
+    this.router.navigate(['/menu/music'], {
+      queryParams: {
+        albumId: album.id,
+        albumName: album.name
       }
     });
   }

@@ -16,6 +16,7 @@ export class RegisterPage implements OnInit {
 
     registerForm: FormGroup;
     errorMessage: string = "";
+    successMessage: string = "";
 
     validation_messages = {
         nombre: [
@@ -31,6 +32,9 @@ export class RegisterPage implements OnInit {
         password: [
             { type: 'required', message: 'La contraseña es obligatoria.' },
             { type: 'minlength', message: 'La contraseña debe tener al menos 8 caracteres.' }
+        ],
+        password_confirmation: [
+            { type: 'required', message: 'Debe confirmar la contraseña.' }
         ]
     };
 
@@ -50,19 +54,46 @@ export class RegisterPage implements OnInit {
             password: new FormControl('', Validators.compose([
                 Validators.required,
                 Validators.minLength(8)
-            ]))
+            ])),
+            password_confirmation: new FormControl('', Validators.required)
         });
     }
 
     ngOnInit() { }
 
-    async registerUser(userData: any) {
+    async registerUser(formData: any) {
+        this.errorMessage = "";
+        this.successMessage = "";
+
+        // Validar que las contraseñas coincidan
+        if (formData.password !== formData.password_confirmation) {
+            this.errorMessage = "Las contraseñas no coinciden";
+            return;
+        }
+
+        // Mapear los datos al formato esperado por la API
+        const userData = {
+            name: formData.nombre,
+            last_name: formData.apellido,
+            email: formData.email,
+            password: formData.password,
+            password_confirmation: formData.password_confirmation
+        };
+
+        console.log('Enviando datos de registro:', userData);
+
         this.auth.registerUser(userData)
-            .then(() => {
-                this.navCtrl.navigateBack('/login');
+            .then((message) => {
+                this.successMessage = message;
+                console.log('Registro exitoso, redirigiendo a login...');
+                // Esperar un momento para que el usuario vea el mensaje de éxito
+                setTimeout(() => {
+                    this.navCtrl.navigateBack('/login');
+                }, 1500);
             })
             .catch(error => {
                 this.errorMessage = error;
+                console.error('Error en registro:', error);
             });
     }
 

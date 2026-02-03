@@ -1,0 +1,282 @@
+.global-player-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0 10px 10px 10px;
+    background: transparent;
+    pointer-events: none;
+}
+
+.glass-player {
+    background: rgba(var(--ion-background-color-rgb, 255, 255, 255), 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
+    border-radius: 24px;
+    padding: 12px 20px;
+    pointer-events: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Progress Section */
+.player-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 4px;
+
+    .time {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ion-text-color);
+        opacity: 0.6;
+        min-width: 32px;
+    }
+
+    .progress-range {
+        --bar-background: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
+        --bar-background-active: var(--ion-color-primary);
+        --knob-background: var(--ion-color-primary);
+        --knob-size: 12px;
+        padding: 0;
+        margin: 0;
+        flex: 1;
+        height: 12px;
+    }
+}
+
+.player-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* Song Info & Artwork */
+.song-info-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+
+    .artwork-container {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: transform 0.4s ease;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        &.playing {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(var(--ion-color-primary-rgb), 0.4);
+        }
+    }
+
+    .text-info {
+        min-width: 0;
+
+        .track-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--ion-text-color);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .artist-name {
+            font-size: 0.8rem;
+            color: var(--ion-text-color);
+            opacity: 0.6;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
+/* Controls Section */
+.controls-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .control-btn {
+        --padding-start: 8px;
+        --padding-end: 8px;
+        margin: 0;
+
+        ion-icon {
+            font-size: 1.25rem;
+            color: var(--ion-text-color);
+        }
+
+        &.main-action ion-icon {
+            font-size: 1.5rem;
+        }
+
+        &.secondary-btn {
+            opacity: 0.4;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
+    .play-pause-btn {
+        --border-radius: 50%;
+        --width: 48px;
+        --height: 48px;
+        --padding-start: 0;
+        --padding-end: 0;
+        margin: 0;
+        --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+
+        ion-icon {
+            font-size: 1.75rem;
+            color: white;
+        }
+    }
+}
+
+/* Extra Actions */
+.extra-actions {
+    display: flex;
+    align-items: center;
+
+    .favorite-btn {
+        --padding-start: 8px;
+        --padding-end: 8px;
+        margin: 0;
+
+        ion-icon {
+            font-size: 1.5rem;
+            color: var(--ion-text-color);
+            opacity: 0.7;
+        }
+    }
+}
+
+/* Animations */
+.playing-bars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+
+    span {
+        display: inline-block;
+        width: 3px;
+        height: 12px;
+        background: white;
+        border-radius: 2px;
+        animation: barBounce 0.8s ease-in-out infinite;
+
+        &:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        &:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+    }
+}
+
+@keyframes barBounce {
+
+    0%,
+    100% {
+        height: 4px;
+    }
+
+    50% {
+        height: 16px;
+    }
+}
+
+/* Dark Mode Adjustments */
+body.theme-dark {
+    .glass-player {
+        background: rgba(30, 30, 30, 0.8);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Theme specifics */
+body.theme-rosa {
+    .play-pause-btn {
+        --background: #ff69b4;
+    }
+
+    .progress-range {
+        --bar-background-active: #ff69b4;
+        --knob-background: #ff69b4;
+    }
+}
+
+body.theme-amarillo {
+    .play-pause-btn {
+        --background: #ffd700;
+        --color: #000;
+    }
+
+    .progress-range {
+        --bar-background-active: #ffd700;
+        --knob-background: #ffd700;
+    }
+
+    .play-pause-btn ion-icon {
+        color: #000;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .control-btn.secondary-btn {
+        display: none;
+    }
+
+    .extra-actions {
+        display: none;
+    }
+
+    .player-content {
+        gap: 8px;
+    }
+}

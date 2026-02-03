@@ -5,28 +5,63 @@
         <ion-icon [icon]="closeIcon"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title> Songs ({{ songs?.length || 0 }})</ion-title>
+    <ion-title>
+      <div class="header-title">
+        <span class="title-text">Canciones</span>
+        <span class="song-count">{{ songs.length || 0 }}</span>
+      </div>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-list *ngIf="songs?.length; else noSongs">
-    <ion-item button *ngFor="let s of songs; let i = index" (click)="selectSong(s)">
-      <ion-label>
-        <h3>{{ s.title || s.name || ('Track ' + (i+1)) }}</h3>
-        <p *ngIf="s.artist">{{ s.artist }}</p>
-      </ion-label>
-      <ion-buttons slot="end">
-        <ion-button (click)="$event.stopPropagation(); play(s)">
-          <ion-icon [icon]="playIcon"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-item>
-  </ion-list>
+<ion-content class="songs-modal-content" [fullscreen]="true">
+  <div class="songs-container">
 
-  <ng-template #noSongs>
-    <div class="no-songs">
-      <p>No songs available.</p>
+    <!-- Songs List -->
+    <div class="songs-list-wrapper" *ngIf="songs.length; else noSongs">
+      <ion-list class="songs-list">
+        <ion-item *ngFor="let s of songs; let i = index" class="song-item" (click)="selectSong(s)">
+
+          <!-- Song Number -->
+          <div class="song-number" slot="start">
+            <span class="number">{{ i + 1 }}</span>
+            <ion-icon [icon]="playIcon" class="play-overlay"></ion-icon>
+          </div>
+
+          <!-- Song Info -->
+          <ion-label>
+            <h3 class="song-title">{{ s.title || s.name || ('Track ' + (i+1)) }}</h3>
+            <p class="song-artist" *ngIf="s.artist">{{ s.artist }}</p>
+            <p class="song-duration" *ngIf="s.duration">{{ formatDuration(s.duration) }}</p>
+          </ion-label>
+
+          <!-- Actions -->
+          <div class="song-actions" slot="end">
+            <!-- Favorite Button -->
+            <ion-button fill="clear" (click)="toggleFavorite(s, $event)" [disabled]="isLoadingFavorite(s.id)"
+              class="favorite-button">
+              <ion-spinner *ngIf="isLoadingFavorite(s.id)" name="crescent"></ion-spinner>
+              <ion-icon *ngIf="!isLoadingFavorite(s.id)" [icon]="isFavorite(s.id) ? heartIcon : heartOutlineIcon"
+                [class.is-favorite]="isFavorite(s.id)">
+              </ion-icon>
+            </ion-button>
+
+            <!-- Play Button -->
+            <ion-button fill="clear" (click)="$event.stopPropagation(); play(s)" class="play-button">
+              <ion-icon [icon]="playIcon"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-item>
+      </ion-list>
     </div>
-  </ng-template>
+
+    <!-- Empty State -->
+    <ng-template #noSongs>
+      <div class="no-songs">
+        <ion-icon [icon]="musicalNotesIcon"></ion-icon>
+        <p>No hay canciones disponibles</p>
+      </div>
+    </ng-template>
+
+  </div>
 </ion-content>

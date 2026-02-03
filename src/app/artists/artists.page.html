@@ -1,64 +1,86 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title class="ion-text-center">Artistas</ion-title>
+    <ion-title>Artistas</ion-title>
+    <ion-buttons slot="end">
+      <app-theme-button></app-theme-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Searchbar -->
+  <ion-toolbar *ngIf="!loading && artists.length > 0">
+    <ion-searchbar [(ngModel)]="searchQuery" (ionInput)="handleSearch($event)" placeholder="Buscar artistas..."
+      animated="true" debounce="300">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-searchbar
-    placeholder="Buscar artistas..."
-    (ionChange)="onSearchChange($event)"
-    [(ngModel)]="searchQuery">
-  </ion-searchbar>
+<ion-content class="artists-content" [fullscreen]="true">
+  <div class="artists-container">
 
-  <div *ngIf="loading" class="loader-container">
-    <ion-spinner name="crescent"></ion-spinner>
-    <ion-text>Cargando artistas...</ion-text>
-  </div>
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando artistas...</p>
+    </div>
 
-  <div *ngIf="error" class="error-message">
-    <ion-text color="danger">{{ error }}</ion-text>
-  </div>
+    <!-- Error State -->
+    <div class="error-container" *ngIf="error && !loading">
+      <ion-icon [icon]="personIcon"></ion-icon>
+      <p>{{ error }}</p>
+      <ion-button (click)="loadArtists()" size="small">
+        <ion-icon name="refresh" slot="start"></ion-icon>
+        Reintentar
+      </ion-button>
+    </div>
 
-  <div *ngIf="!loading && artists.length > 0" class="artists-container">
-    <swiper-container
-      pagination="true"
-      pagination-clickable="true"
-      loop="true"
-      slides-per-view="1"
-      breakpoints='{"640": {"slidesPerView": 2}, "1024": {"slidesPerView": 3}, "1400": {"slidesPerView": 4}}'>
-      
-      <swiper-slide *ngFor="let artist of artists">
-        <div class="artist-card">
+    <!-- Artists Grid -->
+    <div class="artists-section" *ngIf="!loading && !error && filteredArtists.length > 0">
+      <div class="artists-header">
+        <h2>{{ filteredArtists.length }} {{ filteredArtists.length === 1 ? 'Artista' : 'Artistas' }}</h2>
+        <p *ngIf="searchQuery">Resultados para "{{ searchQuery }}"</p>
+      </div>
+
+      <div class="artists-grid">
+        <ion-card *ngFor="let artist of filteredArtists" class="artist-card" (click)="viewArtistSongs(artist)">
+
+          <!-- Artist Image -->
           <div class="artist-image-container">
-            <img 
-              [src]="artist.image || 'assets/placeholder.png'" 
-              alt="{{ artist.name }}"
-              class="artist-image"/>
-          </div>
-          <div class="artist-info">
-            <h3 class="artist-name">{{ artist.name }}</h3>
-            <p class="artist-genres" *ngIf="artist.genres">
-              {{ artist.genres.join(', ') }}
-            </p>
-            <div class="artist-stats">
-              <span *ngIf="artist.followers" class="stat">
-                {{ artist.followers | number }}
-              </span>
-              <span *ngIf="artist.popularity" class="stat">
-                {{ artist.popularity }}%
-              </span>
+            <img [src]="getArtistImage(artist)" [alt]="artist.name" ng-skip-optimization />
+            <div class="artist-overlay">
+              <ion-icon [icon]="musicalNotesIcon" class="music-icon"></ion-icon>
+              <span class="view-songs">Ver canciones</span>
             </div>
           </div>
-        </div>
-      </swiper-slide>
-    </swiper-container>
-  </div>
 
-  <div *ngIf="!loading && artists.length === 0 && !error" class="no-results">
-    <ion-text color="medium"> No se encontraron artistas </ion-text>
+          <!-- Artist Info -->
+          <ion-card-header>
+            <ion-card-title class="artist-name">{{ artist.name }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content *ngIf="artist.bio" class="artist-bio">
+            {{ artist.bio | slice:0:100 }}{{ artist.bio?.length > 100 ? '...' : '' }}
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-container" *ngIf="!loading && !error && filteredArtists.length === 0 && !searchQuery">
+      <ion-icon [icon]="personIcon"></ion-icon>
+      <p>No hay artistas disponibles</p>
+    </div>
+
+    <!-- No Results State -->
+    <div class="empty-container" *ngIf="!loading && !error && filteredArtists.length === 0 && searchQuery">
+      <ion-icon name="search-outline"></ion-icon>
+      <p>No se encontraron artistas para "{{ searchQuery }}"</p>
+      <ion-button (click)="searchQuery = ''; handleSearch({target: {value: ''}})" size="small" fill="outline">
+        Limpiar búsqueda
+      </ion-button>
+    </div>
+
   </div>
 </ion-content>

@@ -1,42 +1,63 @@
 <ion-app>
   <ion-router-outlet></ion-router-outlet>
 
-  <ion-footer class="global-player" *ngIf="currentSong">
-    <ion-grid>
-      <ion-row>
-        <ion-col class="ion-text-start"> 0:00 </ion-col>
-        <ion-col class="ion-text-end"> 0:30 </ion-col>
-      </ion-row>
-    </ion-grid>
+  <!-- Premium Global Player -->
+  <ion-footer class="global-player-container" *ngIf="currentSong">
+    <div class="glass-player">
+      <!-- Progress Bar (Interactive) -->
+      <div class="player-progress">
+        <span class="time start">{{ formatTime(currentTime) }}</span>
+        <ion-range class="progress-range" [value]="currentTime" [max]="duration" (ionChange)="onSeek($event)"
+          debounce="100">
+        </ion-range>
+        <span class="time end">{{ formatTime(duration) }}</span>
+      </div>
 
-    <ion-progress-bar [value]="0.5"></ion-progress-bar>
+      <div class="player-content">
+        <!-- Song Info & Artwork -->
+        <div class="song-info-section">
+          <div class="artwork-container" [class.playing]="currentSong?.playing">
+            <img [src]="currentSong?.image || 'assets/default-track.jpg'" alt="Artwork" />
+            <div class="playing-bars" *ngIf="currentSong?.playing">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="text-info">
+            <h3 class="track-name">{{ currentSong?.name || currentSong?.title }}</h3>
+            <p class="artist-name">{{ currentSong?.artist || 'Unknown Artist' }}</p>
+          </div>
+        </div>
 
-    <ion-grid>
-      <ion-row>
-        <ion-col size="1">
-          <ion-icon name="heart-outline"></ion-icon>
-        </ion-col>
+        <!-- Player Controls -->
+        <div class="controls-section">
+          <ion-button fill="clear" class="control-btn secondary-btn">
+            <ion-icon name="shuffle"></ion-icon>
+          </ion-button>
 
-        <ion-col size="10">
-          <ion-text>
-            {{ currentSong?.name || currentSong?.title || 'Selecciona una canción' }}
-          </ion-text>
-        </ion-col>
+          <ion-button fill="clear" class="control-btn main-action" (click)="player.previous()">
+            <ion-icon name="play-skip-back"></ion-icon>
+          </ion-button>
 
-        <ion-col size="1">
-          <ion-icon
-            name="play"
-            *ngIf="!currentSong?.playing"
-            (click)="play()">
-          </ion-icon>
+          <ion-button fill="solid" class="play-pause-btn" (click)="currentSong?.playing ? pause() : play()">
+            <ion-icon [name]="currentSong?.playing ? 'pause' : 'play'"></ion-icon>
+          </ion-button>
 
-          <ion-icon
-            name="pause"
-            *ngIf="currentSong?.playing"
-            (click)="pause()">
-          </ion-icon>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+          <ion-button fill="clear" class="control-btn main-action" (click)="player.next()">
+            <ion-icon name="play-skip-forward"></ion-icon>
+          </ion-button>
+
+          <ion-button fill="clear" class="control-btn secondary-btn">
+            <ion-icon name="repeat"></ion-icon>
+          </ion-button>
+        </div>
+
+        <!-- Extra Actions -->
+        <div class="extra-actions">
+          <ion-button fill="clear" class="favorite-btn">
+            <ion-icon name="heart-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
   </ion-footer>
 </ion-app>

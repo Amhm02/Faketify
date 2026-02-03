@@ -1,38 +1,430 @@
-.slide-content {
-  background: var(--ion-card-background);
-  color: var(--ion-text-color);
-  padding: 24px;
-  margin: 24px auto;
-  max-width: 820px;
-  border-radius: 14px;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+.home-content {
+  --background: var(--ion-background-color);
+}
+
+.home-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  min-height: 100%;
+}
+
+/* Welcome Section */
+.welcome-section {
   text-align: center;
-  transition: background-color 320ms ease, color 320ms ease, transform 220ms ease;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.6s ease-out;
+}
 
-  img {
-    width: 100%;
-    max-width: 640px;
-    height: auto;
-    border-radius: 12px;
-    margin: 18px 0;
-    transition: transform 300ms ease, box-shadow 300ms ease;
-  }
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--ion-text-color);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-toolbar-background));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  h2 {
-    margin: 0;
-    font-size: 32px;
-    color: var(--ion-color-primary);
-    transition: color 0.3s ease;
-    font-weight: 700;
+.welcome-subtitle {
+  font-size: 1.1rem;
+  color: var(--ion-text-color);
+  opacity: 0.7;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Genres/Artists Carousel */
+.genres-carousel,
+.artists-carousel {
+  padding: 0 1rem 2rem;
+  animation: fadeInUp 0.8s ease-out 0.3s backwards;
+}
+
+swiper-container {
+  width: 100%;
+  height: auto;
+  padding-bottom: 3rem;
+  --swiper-pagination-color: var(--ion-color-primary);
+  --swiper-pagination-bullet-inactive-color: var(--ion-text-color);
+  --swiper-pagination-bullet-inactive-opacity: 0.3;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  animation: fadeIn 0.5s ease-out;
+
+  ion-spinner {
+    --color: var(--ion-color-primary);
+    transform: scale(1.5);
   }
 
   p {
-    margin-top: 10px;
-    font-size: 16px;
-    text-align: center;
     color: var(--ion-text-color);
-    opacity: 0.92;
-    transition: color 0.3s ease;
+    opacity: 0.7;
+    font-size: 1rem;
+    margin: 0;
   }
 }
 
+/* Error State */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  animation: fadeIn 0.5s ease-out;
+
+  ion-icon {
+    font-size: 4rem;
+    color: #ef4444;
+  }
+
+  p {
+    color: var(--ion-text-color);
+    opacity: 0.7;
+    font-size: 1rem;
+    margin: 0;
+    text-align: center;
+  }
+
+  ion-button {
+    margin-top: 0.5rem;
+  }
+}
+
+/* Empty State */
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  animation: fadeIn 0.5s ease-out;
+
+  ion-icon {
+    font-size: 4rem;
+    color: var(--ion-text-color);
+    opacity: 0.3;
+  }
+
+  p {
+    color: var(--ion-text-color);
+    opacity: 0.5;
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+/* Genre/Artist Card */
+.genre-card,
+.artist-card {
+  background: var(--ion-card-background);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--ion-border-color);
+  margin: 1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+  }
+}
+
+/* Image Container */
+.genre-image-container {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-toolbar-background));
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, filter 0.3s ease;
+  }
+
+  .genre-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    .play-icon {
+      font-size: 5rem;
+      color: white;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+      transform: scale(0.8);
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &:hover {
+    img {
+      transform: scale(1.1);
+      filter: brightness(0.8);
+    }
+
+    .genre-overlay {
+      opacity: 1;
+
+      .play-icon {
+        transform: scale(1);
+      }
+    }
+  }
+}
+
+/* Genre Content */
+.genre-content {
+  padding: 1.75rem 1.5rem;
+}
+
+.genre-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.1);
+  border: 1px solid rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.3);
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  transition: all 0.3s ease;
+
+  ion-icon {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background: rgba(var(--ion-color-primary-rgb, 56, 128, 255), 0.2);
+    transform: translateY(-2px);
+  }
+}
+
+.genre-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.5px;
+  transition: color 0.3s ease;
+}
+
+.genre-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ion-text-color);
+  opacity: 0.85;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+/* Artist aliases (same styles as genre) */
+.artist-image-container {
+  @extend .genre-image-container;
+}
+
+.artist-overlay {
+  @extend .genre-overlay;
+}
+
+.artist-content {
+  @extend .genre-content;
+}
+
+.artist-badge {
+  @extend .genre-badge;
+}
+
+.artist-name {
+  @extend .genre-title;
+}
+
+.artist-description {
+  @extend .genre-description;
+}
+
+
+/* Theme-specific adjustments */
+body.theme-light {
+  .genre-card {
+    background: #ffffff;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  }
+}
+
+body.theme-dark {
+  .genre-card {
+    background: #1e1e1e;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .welcome-title {
+    -webkit-text-fill-color: #ffffff;
+    background: none;
+  }
+
+  .genre-image-container {
+    background: linear-gradient(135deg, #ffffff, #4dabf7);
+  }
+}
+
+body.theme-rosa {
+  .genre-card {
+    background: #fff0f5;
+    border-color: rgba(214, 51, 132, 0.2);
+  }
+
+  .welcome-title {
+    background: linear-gradient(135deg, #ff69b4, #d63384);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .genre-image-container {
+    background: linear-gradient(135deg, #ff69b4, #d63384);
+  }
+
+  .genre-badge {
+    background: rgba(214, 51, 132, 0.1);
+    border-color: rgba(214, 51, 132, 0.3);
+    color: #d63384;
+  }
+}
+
+body.theme-amarillo {
+  .genre-card {
+    background: #fffbe6;
+    border-color: rgba(204, 163, 0, 0.2);
+  }
+
+  .welcome-title {
+    background: linear-gradient(135deg, #ffd700, #cca300);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .genre-image-container {
+    background: linear-gradient(135deg, #ffd700, #cca300);
+  }
+
+  .genre-badge {
+    background: rgba(204, 163, 0, 0.1);
+    border-color: rgba(204, 163, 0, 0.3);
+    color: #cca300;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .home-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .welcome-title {
+    font-size: 2rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+  }
+
+  .genre-card {
+    margin: 0.5rem;
+  }
+
+  .genre-image-container {
+    height: 240px;
+  }
+
+  .genre-content {
+    padding: 1.25rem 1rem;
+  }
+
+  .genre-title {
+    font-size: 1.5rem;
+  }
+
+  .genre-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .home-container {
+    padding: 3rem 2rem;
+  }
+
+  .genre-card {
+    max-width: 700px;
+  }
+
+  .genre-image-container {
+    height: 380px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .genre-card {
+    max-width: 800px;
+  }
+
+  .genre-image-container {
+    height: 420px;
+  }
+}

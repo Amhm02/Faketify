@@ -3,28 +3,72 @@
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title class="ion-text-center"> Home </ion-title>
+        <ion-title class="ion-text-center">Descubre Música</ion-title>
         <ion-buttons slot="end">
             <app-theme-button></app-theme-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-    <swiper-container 
-    pagination = "true"
-    loop = "true"
-    pagination-clickable = "true"
-    slides-per-view = "1"
-    >
-    <swiper-slide *ngFor="let genre of genres">
-        <div class="slide-content">
-            <h2>{{genre.title}}</h2>
-            <img [src]="genre.image" [alt]="genre.title" ng-skip-optimization />
-            <p>{{genre.description}}</p>
+<ion-content class="home-content" [fullscreen]="true">
+    <div class="home-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 class="welcome-title">Explora Artistas</h1>
+            <p class="welcome-subtitle">Descubre tu próximo artista favorito</p>
         </div>
-    </swiper-slide>
-    </swiper-container>
+
+        <!-- Loading State -->
+        <div class="loading-container" *ngIf="loadingArtists">
+            <ion-spinner name="crescent"></ion-spinner>
+            <p>Cargando artistas...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-container" *ngIf="errorLoadingArtists && !loadingArtists">
+            <ion-icon name="alert-circle"></ion-icon>
+            <p>{{ errorLoadingArtists }}</p>
+            <ion-button (click)="loadArtists()" size="small">
+                <ion-icon name="refresh" slot="start"></ion-icon>
+                Reintentar
+            </ion-button>
+        </div>
+
+        <!-- Artists Carousel -->
+        <div class="artists-carousel" *ngIf="!loadingArtists && !errorLoadingArtists && artists.length > 0">
+            <swiper-container pagination="true" loop="true" pagination-clickable="true" slides-per-view="1"
+                space-between="20" effect="cards">
+                <swiper-slide *ngFor="let artist of artists">
+                    <div class="artist-card" (click)="showSongsByArtist(artist)">
+                        <!-- Image Section -->
+                        <div class="artist-image-container">
+                            <img [src]="artist.image || 'assets/default-artist.jpg'" [alt]="artist.name"
+                                ng-skip-optimization />
+                            <div class="artist-overlay">
+                                <ion-icon name="play-circle" class="play-icon"></ion-icon>
+                            </div>
+                        </div>
+
+                        <!-- Content Section -->
+                        <div class="artist-content">
+                            <div class="artist-badge">
+                                <ion-icon name="person"></ion-icon>
+                                <span>Artista</span>
+                            </div>
+                            <h2 class="artist-name">{{ artist.name }}</h2>
+                            <p class="artist-description" *ngIf="artist.bio">{{ artist.bio }}</p>
+                            <p class="artist-description" *ngIf="!artist.bio">Toca para ver las canciones de este
+                                artista</p>
+                        </div>
+                    </div>
+                </swiper-slide>
+            </swiper-container>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-container" *ngIf="!loadingArtists && !errorLoadingArtists && artists.length === 0">
+            <ion-icon name="musical-notes-outline"></ion-icon>
+            <p>No hay artistas disponibles</p>
+        </div>
+    </div>
 </ion-content>
-
-

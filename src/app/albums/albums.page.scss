@@ -1,0 +1,153 @@
+.albums-content {
+    --background: var(--ion-background-color);
+}
+
+.albums-container {
+    padding: 1rem;
+}
+
+/* Loading & Error */
+.loading-container,
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+    text-align: center;
+    gap: 1rem;
+
+    ion-spinner {
+        --color: var(--ion-color-primary);
+    }
+}
+
+/* Album Card */
+.album-card {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--ion-card-background);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    border: none;
+
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+
+        .cover-overlay {
+            opacity: 1;
+        }
+
+        img {
+            transform: scale(1.1);
+        }
+    }
+}
+
+.cover-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+}
+
+.cover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(var(--ion-color-primary-rgb), 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    gap: 8px;
+
+    .view-icon {
+        font-size: 2.5rem;
+    }
+
+    span {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 1px;
+    }
+}
+
+.album-info {
+    padding: 12px;
+
+    .album-name {
+        margin: 0 0 4px 0;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--ion-text-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .album-artist {
+        margin: 0;
+        font-size: 0.8rem;
+        color: var(--ion-text-color);
+        opacity: 0.6;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Empty State */
+.empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4rem 2rem;
+    opacity: 0.5;
+    text-align: center;
+
+    ion-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+ion-col {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .album-info .album-name {
+        font-size: 0.9rem;
+    }
+}

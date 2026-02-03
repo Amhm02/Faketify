@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonMenu, IonRouterOutlet, IonList, IonItem, IonIcon, IonLabel, IonMenuToggle, NavController, MenuController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { homeOutline, logOutOutline, informationCircleOutline, personCircleOutline, closeCircleOutline } from 'ionicons/icons';
+import { homeOutline, logOutOutline, informationCircleOutline, personCircleOutline, closeCircleOutline, heartOutline, albumsOutline } from 'ionicons/icons';
 import { StorageService } from '../storage.service';
 import { Router, RouterModule } from '@angular/router';
 
@@ -38,7 +38,15 @@ export class MenuPage implements OnInit {
     private menu: MenuController,
     private router: Router
   ) {
-    addIcons({ homeOutline, logOutOutline, informationCircleOutline, personCircleOutline, closeCircleOutline });
+    addIcons({
+      homeOutline,
+      logOutOutline,
+      informationCircleOutline,
+      personCircleOutline,
+      closeCircleOutline,
+      heartOutline,
+      albumsOutline
+    });
   }
 
   ngOnInit() {

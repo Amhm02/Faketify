@@ -1,127 +1,122 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonApp,
   IonRouterOutlet,
   IonFooter,
-  IonText,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonProgressBar,
-  IonIcon
+  IonIcon,
+  IonButton,
+  IonRange
 } from '@ionic/angular/standalone';
 import { register } from 'swiper/element/bundle';
 import { PlayerService } from './services/player.service';
-import {
-  Router,
-  NavigationStart,
-  NavigationEnd,
-  NavigationCancel,
-  NavigationError,
-  RouteConfigLoadStart,
-  RouteConfigLoadEnd,
-  ActivationStart,
-  ActivationEnd,
-  Event
-} from '@angular/router';
+import { Router } from '@angular/router';
 import { ThemeService } from './services/theme.service';
 import { addIcons } from 'ionicons';
-import { heartOutline, play, pause } from 'ionicons/icons';
+import {
+  heartOutline,
+  heart,
+  play,
+  pause,
+  playSkipBack,
+  playSkipForward,
+  repeat,
+  shuffle
+} from 'ionicons/icons';
 
 register();
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss'],
   standalone: true,
   imports: [
     IonApp,
     IonRouterOutlet,
     IonFooter,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonProgressBar,
     IonIcon,
-    IonText,
+    IonButton,
+    IonRange,
     CommonModule
   ],
 })
-export class AppComponent {
-  lastRouterEvent: string | null = null;
-  lastError: string | null = null;
-
+export class AppComponent implements OnInit {
   currentSong: any = null;
-  showDebugBanner = false;
+  currentTime: number = 0;
+  duration: number = 0;
+  progress: number = 0;
 
   constructor(
     private router: Router,
     private themeService: ThemeService,
     private cdr: ChangeDetectorRef,
-    private player: PlayerService
+    public player: PlayerService
   ) {
     // Registrar íconos
     addIcons({
       'heart-outline': heartOutline,
+      'heart': heart,
       'play': play,
       'pause': pause,
+      'play-skip-back': playSkipBack,
+      'play-skip-forward': playSkipForward,
+      'repeat': repeat,
+      'shuffle': shuffle
     });
+  }
 
-    this.themeService.init();
+  async ngOnInit() {
+    await this.themeService.init();
 
     this.themeService.theme$.subscribe(theme => {
-      try { this.themeService.applyTheme(theme); } catch(e) {}
-    });
-
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationStart) {
-        this.lastRouterEvent = `NavigationStart -> ${event.url}`;
-      } else if (event instanceof RouteConfigLoadStart) {
-        this.lastRouterEvent = `RouteConfigLoadStart -> ${String(event)}`;
-      } else if (event instanceof RouteConfigLoadEnd) {
-        this.lastRouterEvent = `RouteConfigLoadEnd -> ${String(event)}`;
-      } else if (event instanceof ActivationStart) {
-        this.lastRouterEvent = `ActivationStart -> ${event.snapshot?.routeConfig?.path}`;
-      } else if (event instanceof ActivationEnd) {
-        this.lastRouterEvent = `ActivationEnd -> ${event.snapshot?.routeConfig?.path}`;
-      } else if (event instanceof NavigationEnd) {
-        this.lastRouterEvent = `NavigationEnd -> ${event.url}`;
-      } else if (event instanceof NavigationCancel) {
-        this.lastRouterEvent = `NavigationCancel -> ${String(event)}`;
-      } else if (event instanceof NavigationError) {
-        this.lastRouterEvent = `NavigationError -> ${event.error}`;
-        this.lastError = `NavigationError: ${String(event.error)}`;
-      }
-
-      try { this.cdr.detectChanges(); } catch (e) {}
+      try { this.themeService.applyTheme(theme); } catch (e) { }
     });
 
     this.player.song$.subscribe((song: any) => {
-      console.log('AppComponent: player.song$ emitted ->', song);
       this.currentSong = song;
-      try { this.cdr.detectChanges(); } catch(e) {}
+      this.cdr.detectChanges();
     });
 
-    window.addEventListener('error', (evt) => {
-      this.lastError = evt.error ? (evt.error.message || String(evt.error)) : (evt.message || 'Unknown error');
-      console.error('window.error captured:', evt.error || evt.message, evt);
-      try { this.cdr.detectChanges(); } catch (e) {}
+    this.player.currentTime$.subscribe(time => {
+      this.currentTime = time;
+      this.calculateProgress();
+      this.cdr.detectChanges();
     });
 
-    window.addEventListener('unhandledrejection', (evt) => {
-      this.lastError = evt.reason ? (evt.reason.message || String(evt.reason)) : String(evt.reason || evt);
-      console.error('unhandledrejection captured:', evt.reason || evt, evt);
-      try { this.cdr.detectChanges(); } catch (e) {}
+    this.player.duration$.subscribe(duration => {
+      this.duration = duration;
+      this.calculateProgress();
+      this.cdr.detectChanges();
     });
+  }
+
+  private calculateProgress() {
+    if (this.duration > 0) {
+      this.progress = this.currentTime / this.duration;
+    } else {
+      this.progress = 0;
+    }
+  }
+
+  onSeek(event: any) {
+    const value = event.detail.value;
+    this.player.seek(value);
   }
 
   play() {
     if (!this.currentSong) return;
-    this.player.play(this.currentSong);
+    this.player.play();
   }
 
   pause() {
     this.player.pause();
+  }
+
+  formatTime(seconds: number): string {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 }

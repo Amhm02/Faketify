@@ -6,15 +6,14 @@ import {
   IonTitle,
   IonContent,
   IonButtons,
-  IonMenuButton,
-  ModalController
+  IonMenuButton
 } from '@ionic/angular/standalone';
 import { ThemeService } from '../services/theme.service';
 import { StorageService } from '../storage.service';
 import { Router } from '@angular/router';
 import { ThemeButtonComponent } from '../components/theme-button/theme-button.component';
 import { Music } from '../services/music';
-import { SongsModalPage } from '../songs-modal/songs-modal.page';
+import { MusicApiService } from '../services/music-api.service';
 import { PlayerService } from '../services/player.service';
 
 @Component({
@@ -36,28 +35,10 @@ import { PlayerService } from '../services/player.service';
 })
 export class HomePage implements OnInit {
 
-  genres = [
-    {
-      title: "Nu-Metal",
-      image: "assets/slipknot.jpg",
-      description: "Slipknot es una banda estadounidense de heavy metal y nu metal formada en 1995 en Des Moines, Iowa. Sus integrantes en la actualidad son Corey Taylor, Jim Root, Mick Thomson, Shawn Crahan, Sid Wilson, Alessandro Venturella, Michael Pfaff y Eloy Casagrande.",
-    },
-    {
-      title: "Metal industrial",
-      image: "assets/Rammstein.png",
-      description: "Rammstein es una banda alemana de metal industrial fundada en 1994 por los músicos Till Lindemann, Richard Z. Kruspe, Oliver Riedel, Paul Landers, Christian Lorenz y Christoph Schneider.​"
-    },
-    {
-      title: 'Metal gótico',
-      image: 'assets/lord.jpg',
-      description: 'Lord of the Lost es una banda alemana de metal gótico procedente de Hamburgo y creada en 2007 como un proyecto en solitario en manos del músico Chris "The Lord" Harms.'
-    },
-    {
-      title: 'Chelo metal',
-      image: 'assets/apocalyptica.webp',
-      description: 'Apocalyptica es una banda de metal alternativo y chelo metal formada en Helsinki en 1992.'
-    }
-  ];
+  // Artistas cargados desde el servidor
+  artists: any[] = [];
+  loadingArtists: boolean = true;
+  errorLoadingArtists: string = '';
 
   tracks: any[] = [];
   albums: any[] = [];
@@ -68,7 +49,7 @@ export class HomePage implements OnInit {
     private storageService: StorageService,
     private router: Router,
     private Music: Music,
-    private modalCtrl: ModalController,
+    private musicApiService: MusicApiService,
     private player: PlayerService
   ) {
     this.player.song$.subscribe(song => {
@@ -78,6 +59,7 @@ export class HomePage implements OnInit {
 
   async ngOnInit() {
     await this.themeService.init();
+    this.loadArtists();
     this.loadTracks();
   }
 
@@ -87,6 +69,25 @@ export class HomePage implements OnInit {
     this.router.navigateByUrl('/intro');
   }
 
+  // Cargar artistas desde el servidor
+  loadArtists() {
+    this.loadingArtists = true;
+    this.errorLoadingArtists = '';
+
+    this.musicApiService.getArtists().subscribe({
+      next: (artists) => {
+        this.artists = artists;
+        this.loadingArtists = false;
+        console.log('Artistas cargados:', this.artists);
+      },
+      error: (error) => {
+        console.error('Error al cargar artistas:', error);
+        this.errorLoadingArtists = 'No se pudieron cargar los artistas';
+        this.loadingArtists = false;
+      }
+    });
+  }
+
   loadTracks() {
     this.Music.getTracks$().subscribe(tracks => {
       this.tracks = tracks;
@@ -94,24 +95,25 @@ export class HomePage implements OnInit {
     });
   }
 
-  async showSongs(albumId: string) {
-    console.log('album id:', albumId);
+  // Función para mostrar canciones de un artista
+  showSongsByArtist(artist: any) {
+    console.log('Navegando a canciones del artista:', artist);
 
-    this.Music.getSongsByAlbum$(albumId).subscribe(async songs => {
-      console.log('songs:', songs);
-
-      const modal = await this.modalCtrl.create({
-        component: SongsModalPage,
-        componentProps: { songs }
-      });
-
-      await modal.present();
-
-      const { data } = await modal.onDidDismiss();
-      if (data) {
-        this.player.setSong(data);
+    // Navegar a la página de música con parámetros
+    this.router.navigate(['/menu/music'], {
+      queryParams: {
+        artistId: artist.id,
+        artistName: artist.name
       }
     });
+  }
+
+  showSongs(albumId: string) {
+    console.log('Navegando a canciones del álbum:', albumId);
+
+    // Navegar a la página de música
+    // Nota: Podrías necesitar agregar soporte para álbumes en la página de música
+    this.router.navigate(['/menu/music']);
   }
 
   play() {
@@ -122,7 +124,7 @@ export class HomePage implements OnInit {
     this.player.pause();
   }
 
-  formatTime(seconds: number){
+  formatTime(seconds: number) {
     if (!seconds || isNaN(seconds)) return '0:00';
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
